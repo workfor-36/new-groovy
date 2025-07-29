@@ -1,0 +1,53 @@
+import Sidebar, { SidebarItem} from './Sidebar';
+import React ,{ useState } from 'react';
+import {
+  Receipt,
+  Warehouse,
+  LayoutDashboard
+} from "lucide-react"
+
+import ManagerDashboard from './ManagerDashboard';
+import ManagerProductManager from './ManagerProductManager';
+import Category from './Category';
+import ManagerInventory from './ManagerInventory';
+import ManagerReports from './ManagerReports';
+
+
+function StoreManagerHome() {
+  const [activePage, setActivePage] = useState("Dashboard");
+
+
+  const renderContent = () => {
+    switch (activePage) {
+      case "Dashboard": return <ManagerDashboard />;   
+      case "products": return <ManagerProductManager/>;
+            case "Category": return <Category/>;
+            case "inventory": return <ManagerInventory/>;
+            case "reports": return <ManagerReports/>;
+
+      default: return <ManagerDashboard />;
+    }
+  };
+
+  return (
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar>
+        <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={activePage === "Dashboard"} onClick={() => setActivePage("Dashboard")} />
+               <SidebarItem icon={<LayoutDashboard size={20} />} text="Products" active={activePage === "products"} onClick={() => setActivePage("products")} />
+               <SidebarItem icon={<LayoutDashboard size={20} />} text="Category" active={activePage === "Category"} onClick={() => setActivePage("Category")} />
+               <SidebarItem icon={<LayoutDashboard size={20} />} text="Inventory" active={activePage === "inventory"} onClick={() => setActivePage("inventory")} />
+               <SidebarItem icon={<LayoutDashboard size={20} />} text="Reports" active={activePage === "reports"} onClick={() => setActivePage("reports")} />
+
+      </Sidebar>
+
+      <div className="flex-grow overflow-y-auto p-4">
+        {renderContent()}
+      </div>
+    </div>
+  );
+}
+
+export default StoreManagerHome;
+
+
+
