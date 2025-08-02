@@ -1,58 +1,184 @@
-import jwt from "jsonwebtoken";
+ import jwt from "jsonwebtoken";
 import Cashier from "../models/cashierModel.js";
 import Manager from "../models/managerModel.js";
 import Admin from "../models/adminModel.js";
 
-// Protect Cashier Route
-export const protectCashier = async (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
 
+
+
+export const protectCashierOrManager = async (req, res, next) => {
+  let token;
+
+  // ✅ Try Bearer token from Authorization header
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  // ✅ Try cookies
+  else if (req.cookies?.cashier_token) {
+    token = req.cookies.cashier_token;
+  } else if (req.cookies?.manager_token) {
+    token = req.cookies.manager_token;
+  }
+
+  // ❌ No token at all
   if (!token) {
     return res.status(401).json({ message: "No token. Unauthorized" });
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded token:", decoded);
 
-    if (decoded.role !== "cashier") {
-      return res.status(403).json({ message: "Access denied: Cashiers only" });
+    if (decoded.role === "Cashier") {
+      const cashier = await Cashier.findById(decoded.id)
+        .select("-password")
+        .populate("storeId");
+
+      if (!cashier) {
+        return res.status(401).json({ message: "Cashier not found" });
+      }
+
+      req.user = cashier;
+      req.user.role = "Cashier";
+      return next();
     }
 
-    const cashier = await Cashier.findById(decoded.id).select("-password");
+    if (decoded.role === "Manager") {
+      const manager = await Manager.findById(decoded.id)
+        .select("-password")
+        .populate("storeId");
+
+      if (!manager) {
+        return res.status(401).json({ message: "Manager not found" });
+      }
+
+      req.user = manager;
+      req.user.role = "Manager";
+      return next();
+    }
+
+    // ❌ Any other role (e.g. Admin)
+    return res.status(403).json({ message: "Access denied: Unauthorized role" });
+  } catch (err) {
+    console.error("JWT verify error:", err.message);
+    return res.status(401).json({ message: "Invalid token" });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+// Protect Cashier Route
+export const protectCashier = async (req, res, next) => {
+  let token;
+
+  // ✅ Get token from Bearer header
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+
+  // ✅ If not in header, try cookie
+  else if (req.cookies?.cashier_token) {
+    token = req.cookies.cashier_token;
+  }
+
+  // ❌ No token found
+  if (!token) {
+    return res.status(401).json({ message: "No token. Unauthorized" });
+  }
+
+  try {
+    // ✅ Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded token:", decoded);
+
+    // ✅ Check for correct role
+    if (decoded.role !== "Cashier") {
+      return res
+        .status(403)
+        .json({ message: "Access denied: cashier  only" });
+    }
+
+    // ✅ Fetch manager from DB
+    const cashier = await Cashier.findById(decoded.id)
+      .select("-password")
+      .populate("storeId");
+
     if (!cashier) {
       return res.status(401).json({ message: "Cashier not found" });
     }
 
-    req.user = cashier;
+    req.user = cashier; // Attach to request
     next();
   } catch (error) {
+    console.error("JWT verify error:", error.message);
     res.status(401).json({ message: "Invalid token" });
   }
 };
 
 // Protect Manager Route
-export const protectManager = async (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
 
+
+
+    // ✅ Then check Cookies
+   export const protectManager = async (req, res, next) => {
+  let token;
+
+  // ✅ Get token from Bearer header
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+
+  // ✅ If not in header, try cookie
+  else if (req.cookies?.manager_token) {
+    token = req.cookies.manager_token;
+  }
+
+  // ❌ No token found
   if (!token) {
     return res.status(401).json({ message: "No token. Unauthorized" });
   }
 
   try {
+    // ✅ Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded token:", decoded);
 
-    if (decoded.role !== "manager") {
-      return res.status(403).json({ message: "Access denied: Managers only" });
+    // ✅ Check for correct role
+    if (decoded.role !== "Manager") {
+      return res
+        .status(403)
+        .json({ message: "Access denied: Managers only" });
     }
 
-    const manager = await Manager.findById(decoded.id).select("-password");
+    // ✅ Fetch manager from DB
+    const manager = await Manager.findById(decoded.id)
+      .select("-password")
+      .populate("storeId");
+
     if (!manager) {
       return res.status(401).json({ message: "Manager not found" });
     }
 
-    req.user = manager;
+    req.user = manager; // Attach to request
     next();
   } catch (error) {
+    console.error("JWT verify error:", error.message);
     res.status(401).json({ message: "Invalid token" });
   }
 };

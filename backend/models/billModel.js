@@ -1,3 +1,5 @@
+// billModel.js
+
 import mongoose from "mongoose";
 
 const billSchema = new mongoose.Schema({
@@ -15,31 +17,35 @@ const billSchema = new mongoose.Schema({
       },
       productName: {
         type: String,
-        required: true, // cache for quick access at time of billing
+        ref:"ProductName",
+        required: true,
       },
       quantity: {
         type: Number,
-        required: true, // how many units were sold
+        required: true,
       },
       price: {
         type: Number,
-        required: true, // price per unit
+        required: true,
       },
       total: {
         type: Number,
-        required: true, // price * quantity
+        required: true,
       },
+      taxes: [
+        {
+          taxName: String,
+          taxPercentage: Number,
+          taxAmount: Number,
+        },
+      ],
     },
   ],
   totalAmount: {
     type: Number,
     required: true,
   },
-  cashier: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Cashier",
-    required: true,
-  },
+  // cashier: REMOVED
   store: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Store",
@@ -53,19 +59,21 @@ const billSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
-  taxPercentage: {
-  type: Number,
-  default: 0,
-},
-taxAmount: {
-  type: Number,
-  default: 0,
-},
-grandTotal: {
-  type: Number,
-  required: true, // totalAmount + taxAmount
-},
+  taxAmount: {
+    type: Number,
+    default: 0,
+  },
+  taxBreakdown: [
+    {
+      taxName: String,
+      taxPercentage: Number,
+      taxAmount: Number,
+    },
+  ],
+  grandTotal: {
+    type: Number,
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

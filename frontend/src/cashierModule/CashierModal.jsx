@@ -34,18 +34,21 @@ const CashierModal = ({ isOpen, closeModal }) => {
 
   const handleLogin = async () => {
   try {
-    const response = await axios.post("http://localhost:4001/api/auth/cashier/login", {
+    const {data} = await axios.post("http://localhost:4001/api/auth/cashier/login", {
       email,
       password,
     });
 
-    Cookies.set("cashier_token", response.data.token, { expires: 1 });
-    Cookies.set("role", "cashier");
+    Cookies.set("cashier_token", data.token, { expires: 1 });
+    Cookies.set("cashier_storeId", data.cashier_storeId, { expires: 1 });
+    Cookies.set("role", data.role || "cashier",{ expires: 1 } );
 
     alert("Login successful");
     closeModal();
     navigate("/cashier");
   } catch (err) {
+        console.error(err);
+
     setError(err.response?.data?.message || "Login failed");
   }
 };

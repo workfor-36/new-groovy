@@ -1,50 +1,80 @@
-import React from "react";
-
-const dummyInventory = [
-  { id: 1, name: "Dairy Milk", category: "Snacks", quantity: 3, threshold: 5 },
-  { id: 2, name: "Toothpaste", category: "Daily Use", quantity: 12, threshold: 5 },
-  { id: 3, name: "Cooking Oil", category: "Grocery", quantity: 1, threshold: 5 },
-  { id: 4, name: "Bread", category: "Bakery", quantity: 10, threshold: 5 },
-];
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const ManagerInventory = () => {
+  const [inventory, setInventory] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchInventory = async () => {
+      try {
+        const response = await axios.get("http://localhost:4001/api/inventory/manager/", {
+          withCredentials: true,
+        });
+        setInventory(response.data);
+      } catch (error) {
+        console.error("Error fetching inventory:", error.response?.data || error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInventory();
+  }, []);
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Store Inventory</h2>
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border rounded shadow">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="py-2 px-4 text-left">Product</th>
-              <th className="py-2 px-4 text-left">Category</th>
-              <th className="py-2 px-4 text-left">Stock</th>
-              <th className="py-2 px-4 text-left">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dummyInventory.map((item) => (
-              <tr key={item.id} className="border-t">
-                <td className="py-2 px-4">{item.name}</td>
-                <td className="py-2 px-4">{item.category}</td>
-                <td className="py-2 px-4">{item.quantity}</td>
-                <td className="py-2 px-4">
-                  {item.quantity <= item.threshold ? (
-                    <span className="text-red-600 font-semibold">Low Stock</span>
-                  ) : (
-                    <span className="text-green-600">Sufficient</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-            {dummyInventory.length === 0 && (
+        {loading ? (
+          <div className="text-center py-4">Loading...</div>
+        ) : inventory.length === 0 ? (
+          <div className="text-center py-4 text-gray-400">No inventory data available.</div>
+        ) : (
+          <table className="min-w-full bg-white border rounded shadow text-sm">
+            <thead className="bg-gray-100">
               <tr>
-                <td colSpan="4" className="text-center py-4 text-gray-400">
-                  No inventory data available.
-                </td>
+                <th className="py-2 px-4 text-left">Product</th>
+                <th className="py-2 px-4 text-left">Category</th>
+                <th className="py-2 px-4 text-left">Size</th>
+                <th className="py-2 px-4 text-left">Color</th>
+                <th className="py-2 px-4 text-left">Price (₹)</th>
+                <th className="py-2 px-4 text-left">Stock</th>
+                <th className="py-2 px-4 text-left">Status</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {inventory.map((item) => (
+                <tr key={item._id} className="border-t">
+                  <td className="py-2 px-4">
+                    {item.product?.productName?.productName || "N/A"}
+                  </td>
+                  <td className="py-2 px-4">
+                    {item.category?.categoryName || "N/A"}
+                  </td>
+                  <td className="py-2 px-4">
+                    {item.product?.size?.sizeName || "N/A"}
+                  </td>
+                  <td className="py-2 px-4">
+                    {item.product?.color?.colorName || "N/A"}
+                  </td>
+                  <td className="py-2 px-4">
+                    ₹{item.product?.price?.toFixed(2) || "N/A"}
+                  </td>
+                  <td className="py-2 px-4">{item.quantity}</td>
+                  <td className="py-2 px-4">
+  {item.threshold !== undefined && item.quantity <= item.threshold ? (
+    <span className="text-red-600 font-semibold">Low Stock</span>
+  ) : (
+    <span className="text-green-600">Sufficient</span>
+  )}
+</td>
+
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

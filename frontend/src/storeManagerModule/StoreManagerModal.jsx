@@ -40,8 +40,10 @@ const StoreManagerModal = ({ isOpen, closeModal }) => {
       password,
     });
 
+    // Save token, storeId, and role
     Cookies.set("manager_token", data.token, { expires: 1 });
-    Cookies.set("role", "manager");
+    Cookies.set("storeId", data.storeId, { expires: 1 });
+    Cookies.set("role", data.role || "manager", { expires: 1 });
 
     alert("Login successful!");
     closeModal();
@@ -51,6 +53,7 @@ const StoreManagerModal = ({ isOpen, closeModal }) => {
     setError(err.response?.data?.message || "Login failed");
   }
 };
+
 
   if (!isOpen) return null;
 

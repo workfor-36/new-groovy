@@ -22,7 +22,7 @@ const cashierSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    default: "",
   },
   createdAt: {
     type: Date,
@@ -33,11 +33,11 @@ const cashierSchema = new mongoose.Schema({
 // 🔐 Hash password before saving
 cashierSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-
   const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  this.password = await bcrypt.hash(this.password, salt); // ❌ gets hashed again
   next();
 });
+
 
 const Cashier = mongoose.model("Cashier", cashierSchema);
 export default Cashier;

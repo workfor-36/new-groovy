@@ -1,17 +1,12 @@
+// models/categoryModel.js
 import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema({
   categoryName: {
     type: String,
     required: true,
-  },
-  sizes: {
-    type: [String],
-    default: [],
-  },
-  colors: {
-    type: [String],
-    default: [],
+    unique: true,
+    trim: true
   },
   createdAt: {
     type: Date,

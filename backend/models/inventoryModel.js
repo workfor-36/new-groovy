@@ -11,11 +11,17 @@ const inventorySchema = new mongoose.Schema({
     ref: "Product",
     required: true,
   },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
+  },
   quantity: {
     type: Number,
     required: true,
     default: 0,
   },
+  threshold: { type: Number, default: 5 },
   lastUpdated: {
     type: Date,
     default: Date.now,

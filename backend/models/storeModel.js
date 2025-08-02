@@ -15,27 +15,26 @@ const storeSchema = new mongoose.Schema({
     required: true,
   },
   cashier: {
-    name: {
-      type: String,
-      default: "",
-    },
-    email: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Cashier",
-      default: null,
-    },
+  name: {
+    type: String,
+    default: "",
   },
-  manager: {
-    name: {
-      type: String,
-      default: "",
-    },
-    email: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Manager",
-      default: null,
-    },
+  email: {
+    type: String, // ✅ changed from ObjectId to String
+    default: "",
   },
+},
+manager: {
+  name: {
+    type: String,
+    default: "",
+  },
+  email: {
+    type: String, // ✅ changed from ObjectId to String
+    default: "",
+  },
+},
+
   createdAt: {
     type: Date,
     default: Date.now,

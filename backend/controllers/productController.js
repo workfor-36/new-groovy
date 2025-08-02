@@ -1,54 +1,121 @@
-import Product from "../models/productModel.js";
+import Product from "../models/productModel.js"; // adjust path if needed
+import Inventory from "../models/inventoryModel.js";
+import mongoose from "mongoose";
 
-// Create Product
-export const createProduct = async (req, res) => {
+
+
+
+
+
+
+// @desc Get all products
+export const getProducts = async (req, res) => {
   try {
-    const { productName, category, size, color, price } = req.body;
+    const products = await Product.find()
+    .populate("productName") 
+      .populate("category", "categoryName")
+      .populate("size", "sizeName")
+      .populate("color", "colorName");
+  res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch products" });
+  }
+};
 
-    const product = new Product({
-      productName,
-      category,
-      size,
-      color,
-      price,
-      createdAt: new Date(),
+
+
+
+
+
+
+
+
+export const addProduct = async (req, res) => {
+  try {
+    const { productName, category, size, color, price, stock, storeId, threshold } = req.body;
+
+    if (!productName || !category || !size || !color || !price || !stock || !storeId) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    const parsedThreshold = threshold !== undefined ? Number(threshold) : 5;
+
+    const productNameId = new mongoose.Types.ObjectId(productName);
+    const categoryId = new mongoose.Types.ObjectId(category);
+    const sizeId = new mongoose.Types.ObjectId(size);
+    const colorId = new mongoose.Types.ObjectId(color);
+    const storeObjectId = new mongoose.Types.ObjectId(storeId);
+
+    // ✅ Check for existing product with same attributes
+    let existingProduct = await Product.findOne({
+      productName: productNameId,
+      category: categoryId,
+      size: sizeId,
+      color: colorId,
     });
 
-    await product.save();
-    res.status(201).json({ message: "Product created successfully", product });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to create product", error });
-  }
-};
+    if (existingProduct) {
+      const existingInventory = await Inventory.findOne({
+        store: storeObjectId,
+        product: existingProduct._id,
+        category: categoryId,
+      });
 
-// Get All Products
-export const getAllProducts = async (req, res) => {
-  try {
-    const products = await Product.find().sort({ createdAt: -1 });
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch products", error });
-  }
-};
+      if (existingInventory) {
+        existingProduct.stock += Number(stock);
+        await existingProduct.save();
 
-// Update Product
-export const updateProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updated = await Product.findByIdAndUpdate(id, req.body, { new: true });
-    res.json({ message: "Product updated", product: updated });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to update product", error });
-  }
-};
+        existingInventory.quantity += Number(stock);
+        existingInventory.lastUpdated = new Date();
+        await existingInventory.save();
 
-// Delete Product
-export const deleteProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Product.findByIdAndDelete(id);
-    res.json({ message: "Product deleted successfully" });
+        return res.status(200).json({
+          message: "Existing product updated and stock added",
+          product: existingProduct,
+        });
+      } else {
+        await Inventory.create({
+          store: storeObjectId,
+          product: existingProduct._id,
+          category: categoryId,
+          quantity: Number(stock),
+          threshold: parsedThreshold,
+        });
+
+        return res.status(201).json({
+          message: "Product exists, new inventory created",
+          product: existingProduct,
+        });
+      }
+    }
+
+    // ❌ Product doesn't exist — create new
+    const newProduct = await Product.create({
+      productName: productNameId,
+      category: categoryId,
+      size: sizeId,
+      color: colorId,
+      price: Number(price),
+      stock: Number(stock),
+    });
+
+    await Inventory.create({
+      store: storeObjectId,
+      product: newProduct._id,
+      category: categoryId,
+      quantity: Number(stock),
+      threshold: parsedThreshold, // ✅ fixed here
+    });
+
+    return res.status(201).json({
+      message: "New product and inventory created",
+      product: newProduct,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete product", error });
+    console.error("Error in addProduct:", error);
+    res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
+    });
   }
 };

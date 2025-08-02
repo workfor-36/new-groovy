@@ -1,57 +1,161 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const AdminAction = () => {
-  const [users, setUsers] = useState([
-    { id: 1, name: "Amit Singh", email: "amit@groovybills.com", role: "Manager", store: "" },
-    { id: 2, name: "Priya Patel", email: "priya@groovybills.com", role: "Cashier", store: "" },
-  ]);
-
+  const [stores, setStores] = useState([]);
+  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({ name: "", email: "", role: "Cashier" });
   const [editId, setEditId] = useState(null);
 
-  const stores = ["Store A", "Store B", "Store C"]; // Dummy store list
+  useEffect(() => {
+    fetchStores();
+    fetchUsers();
+  }, []);
+
+  const fetchStores = async () => {
+    try {
+      const res = await fetch("http://localhost:4001/api/stores/");
+      const data = await res.json();
+      setStores(data);
+    } catch (error) {
+      console.error("Error fetching stores:", error);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch("http://localhost:4001/api/assign/all-users");
+      const data = await res.json();
+      setUsers(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      alert("Failed to fetch users.");
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleAddOrUpdate = (e) => {
+  const handleAddOrUpdate = async (e) => {
     e.preventDefault();
-    if (editId) {
-      setUsers(users.map(u => u.id === editId ? { ...u, ...formData } : u));
+
+    try {
+      const response = await fetch("http://localhost:4001/api/assign/create-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || "Failed to create user");
+        return;
+      }
+
+      setFormData({ name: "", email: "", role: "Cashier" });
       setEditId(null);
-    } else {
-      const newUser = {
-        ...formData,
-        id: Date.now(),
-        store: "",
-      };
-      setUsers([...users, newUser]);
+      alert(data.message || "User created successfully");
+
+      fetchUsers(); // Refresh users
+    } catch (error) {
+      console.error("Error creating user:", error);
+      alert("Something went wrong while creating the user.");
     }
-    setFormData({ name: "", email: "", role: "Cashier" });
   };
 
   const handleEdit = (user) => {
     setFormData({ name: user.name, email: user.email, role: user.role });
-    setEditId(user.id);
+    setEditId(user._id || user.id);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      setUsers(users.filter(u => u.id !== id));
+  const handleDelete = async (id) => {
+  const user = users.find(u => u._id === id || u.id === id);
+  if (!user) {
+    alert("User not found.");
+    return;
+  }
+
+  const role = user.role.toLowerCase(); // "cashier" or "manager"
+
+  if (window.confirm(`Are you sure you want to delete this ${user.role}?`)) {
+    try {
+      const res = await fetch(`http://localhost:4001/api/stores/delete/${role}/${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Failed to delete user");
+        return;
+      }
+
+      alert(data.message || `${user.role} deleted successfully`);
+      fetchUsers(); // Refresh users list
+      fetchStores(); // Refresh stores to clear manager/cashier refs
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert("An error occurred while deleting the user.");
     }
-  };
+  }
+};
 
-  const handleAssignStore = (userId, storeName) => {
-    setUsers(users.map(u => u.id === userId ? { ...u, store: storeName } : u));
-  };
+
+
+const handleAssignStore = async (userId, storeName) => {
+  try {
+    const selectedUser = users.find(u => u._id === userId || u.id === userId);
+    const selectedStore = stores.find(s => s.storeName === storeName);
+
+    if (!selectedUser || !selectedStore) {
+      alert("Invalid user or store selected");
+      return;
+    }
+
+    const payload = {
+      storeId: selectedStore._id,
+      [`${selectedUser.role.toLowerCase()}Id`]: userId,
+    };
+
+    const endpoint =
+      selectedUser.role === "Manager"
+        ? "http://localhost:4001/api/stores/assign-manager"
+        : "http://localhost:4001/api/stores/assign-cashier";
+
+    const res = await fetch(endpoint, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Failed to assign store");
+      return;
+    }
+
+    alert(data.message || "Store assigned successfully");
+
+    // Refresh data
+    fetchUsers();
+    fetchStores();
+  } catch (error) {
+    console.error("Error assigning store:", error);
+    alert("An error occurred while assigning the store.");
+  }
+};
 
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">Admin - Manage Users & Assign Stores</h2>
 
       {/* Add/Edit Form */}
-      <form onSubmit={handleAddOrUpdate} className="bg-white p-4 rounded shadow-md mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+      <form
+        onSubmit={handleAddOrUpdate}
+        className="bg-white p-4 rounded shadow-md mb-8 grid grid-cols-1 md:grid-cols-4 gap-4"
+      >
         <input
           type="text"
           name="name"
@@ -99,34 +203,29 @@ const AdminAction = () => {
           </thead>
           <tbody>
             {users.map(user => (
-              <tr key={user.id} className="border-t">
+              <tr key={user._id || user.id} className="border-t">
                 <td className="py-2 px-4">{user.name}</td>
                 <td className="py-2 px-4">{user.email}</td>
                 <td className="py-2 px-4">{user.role}</td>
-                <td className="py-2 px-4">{user.store || <span className="text-gray-400">Not Assigned</span>}</td>
+                <td className="py-2 px-4">
+                  {user.storeName || <span className="text-gray-400">Not Assigned</span>}
+                </td>
                 <td className="py-2 px-4">
                   <select
                     className="border rounded px-2 py-1"
-                    value={user.store}
-                    onChange={(e) => handleAssignStore(user.id, e.target.value)}
+                    value={user.storeName || ""}
+                    onChange={(e) => handleAssignStore(user._id || user.id, e.target.value)}
                   >
                     <option value="">-- Select Store --</option>
                     {stores.map(store => (
-                      <option key={store} value={store}>{store}</option>
+                      <option key={store._id} value={store.storeName}>
+                        {store.storeName}
+                      </option>
                     ))}
                   </select>
                 </td>
                 <td className="py-2 px-4 flex gap-2">
-                  <button
-                    onClick={() => handleEdit(user)}
-                    className="text-blue-600 hover:underline"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(user.id)}
-                    className="text-red-600 hover:underline"
-                  >
+                  <button onClick={() => handleDelete(user._id || user.id)} className="text-red-600 hover:underline">
                     Delete
                   </button>
                 </td>

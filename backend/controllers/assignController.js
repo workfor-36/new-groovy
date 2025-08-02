@@ -1,73 +1,73 @@
 import Cashier from "../models/cashierModel.js";
 import Manager from "../models/managerModel.js";
-
 import bcrypt from "bcryptjs";
 
-// Create Cashier or Manager
+// Utility to create user
+const createUserByRole = async ({ name, email, role }) => {
+  const isCashier = role === "Cashier";
+  const isManager = role === "Manager";
+
+  const Model = isCashier ? Cashier : Manager;
+  const defaultPassword = isCashier
+    ? process.env.DEFAULT_CASHIER_PASSWORD
+    : process.env.DEFAULT_MANAGER_PASSWORD;
+
+  const existing = await Model.findOne({ email });
+  if (existing) {
+    throw new Error(`${role} already exists`);
+  }
+
+  const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+
+  const newUser = new Model({
+  name,
+  email,
+  password: defaultPassword, // ✅ plain text here
+  storeId: null,
+  storeName: "",
+});
+
+
+  await newUser.save();
+  return `${role} created successfully`;
+};
+
+// Controller: Create Cashier or Manager
 export const createUser = async (req, res) => {
   try {
     const { name, email, role } = req.body;
 
+    if (!name || !email || !role) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
     if (!["Cashier", "Manager"].includes(role)) {
-      return res.status(400).json({ message: "Invalid role specified." });
+      return res.status(400).json({ message: "Invalid role specified" });
     }
 
-    const defaultPassword = role === "Cashier"
-      ? process.env.DEFAULT_CASHIER_PASSWORD
-      : process.env.DEFAULT_MANAGER_PASSWORD;
-
-    const hashedPassword = await bcrypt.hash(defaultPassword, 10);
-
-    if (role === "Cashier") {
-      const existing = await Cashier.findOne({ email });
-      if (existing) return res.status(400).json({ message: "Cashier already exists" });
-
-      const newCashier = new Cashier({
-        name,
-        email,
-        password: hashedPassword,
-        storeId: null,
-        storeName: "",
-      });
-
-      await newCashier.save();
-      return res.status(201).json({ message: "Cashier created successfully" });
-    }
-
-    if (role === "Manager") {
-      const existing = await Manager.findOne({ email });
-      if (existing) return res.status(400).json({ message: "Manager already exists" });
-
-      const newManager = new Manager({
-        name,
-        email,
-        password: hashedPassword,
-        storeId: null,
-        storeName: "",
-      });
-
-      await newManager.save();
-      return res.status(201).json({ message: "Manager created successfully" });
-    }
-
+    const message = await createUserByRole({ name, email, role });
+    return res.status(201).json({ message });
   } catch (error) {
-    console.error("Create user error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Create user error:", error.message);
+    const status = error.message.includes("already exists") ? 400 : 500;
+    res.status(status).json({ message: error.message || "Internal server error" });
   }
 };
 
-// Get all users (cashiers + managers) for Assign page
+// Controller: Get all users (cashiers + managers) for Assign page
 export const getAllUsers = async (req, res) => {
   try {
-    const cashiers = await Cashier.find({}, "name email storeName");
-    const managers = await Manager.find({}, "name email storeName");
+    const [cashiers, managers] = await Promise.all([
+      Cashier.find({}, "name email storeName"),
+      Manager.find({}, "name email storeName"),
+    ]);
 
     const allUsers = [
-      ...managers.map((user) => ({ ...user.toObject(), role: "Manager" })),
-      ...cashiers.map((user) => ({ ...user.toObject(), role: "Cashier" })),
+      ...managers.map(user => ({ ...user.toObject(), role: "Manager" })),
+      ...cashiers.map(user => ({ ...user.toObject(), role: "Cashier" })),
     ];
 
-    res.json(allUsers);
+    res.status(200).json(allUsers);
   } catch (error) {
     console.error("Fetch users error:", error);
     res.status(500).json({ message: "Failed to fetch users" });

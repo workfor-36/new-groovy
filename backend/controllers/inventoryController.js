@@ -77,11 +77,29 @@ export const transferStock = async (req, res) => {
 
 // GET /api/inventory/manager
 export const getManagerInventory = async (req, res) => {
-  const manager = req.user; // Assume JWT gives manager info
-  const storeId = manager.storeId;
+  try {
+    const manager = req.user;
+    const storeId = manager.store?._id || manager.storeId;
 
-  const inventory = await Inventory.find({ store: storeId })
-    .populate("product", "productName price");
+    if (!storeId) {
+      return res.status(400).json({ message: "Store ID not found for manager." });
+    }
 
-  res.json(inventory);
+    const inventory = await Inventory.find({ store: storeId })
+      .populate({
+        path: "product",
+        select: "productName price size color",
+        populate: [
+          { path: "productName", model: "ProductName" },
+          { path: "size", model: "Size" },
+          { path: "color", model: "Color" },
+        ],
+      })
+      .populate("category", "categoryName");
+
+    res.json(inventory);
+  } catch (err) {
+    console.error("Error fetching inventory:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 };

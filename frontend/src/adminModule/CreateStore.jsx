@@ -14,7 +14,7 @@ const CreateStore = () => {
     setMessage("");
 
     try {
-      const res = await axios.post("http://localhost:4001/api/stores", {
+      const res = await axios.post("http://localhost:4001/api/stores/create", {
         storeId,
         storeName,
         location,

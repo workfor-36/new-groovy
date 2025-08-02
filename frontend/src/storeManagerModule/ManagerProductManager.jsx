@@ -1,55 +1,74 @@
-import React, { useState } from "react";
-
-const initialProducts = [
-  {
-    id: 1,
-    name: "Parle-G Biscuit",
-    category: "Snacks",
-    size: "100g",
-    color: null,
-    price: 10,
-  },
-  {
-    id: 2,
-    name: "Dairy Milk",
-    category: "Chocolates",
-    size: "50g",
-    color: null,
-    price: 20,
-  },
-];
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const ManagerProductManager = () => {
-  const [products, setProducts] = useState(initialProducts);
-  const [formData, setFormData] = useState({ name: "", category: "", size: "", color: "", price: "" });
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [sizes, setSizes] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [productNames, setProductNames] = useState([]); // ✅ Product names
+
+  const [formData, setFormData] = useState({
+    productName: "",
+    category: "",
+    size: "",
+    color: "",
+    price: "",
+    stock: "",
+  });
+
   const [editId, setEditId] = useState(null);
+
+  useEffect(() => {
+    axios.get("http://localhost:4001/api/attributes/category").then((res) => setCategories(res.data));
+    axios.get("http://localhost:4001/api/attributes/size").then((res) => setSizes(res.data));
+    axios.get("http://localhost:4001/api/attributes/color").then((res) => setColors(res.data));
+    axios.get("http://localhost:4001/api/attributes/product-name").then((res) => setProductNames(res.data));
+    axios.get("http://localhost:4001/api/products").then((res) => setProducts(res.data));
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const storeId = Cookies.get("storeId");
 
-    if (editId) {
-      setProducts(products.map(p => (p.id === editId ? { ...p, ...formData } : p)));
-      setEditId(null);
-    } else {
-      const newProduct = { ...formData, id: Date.now() };
-      setProducts([...products, newProduct]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { productName, category, size, color, price, stock } = formData;
+
+    if (!productName || !category || !size || !color || !price || !stock || !storeId) {
+      alert("All fields are required");
+      return;
     }
 
-    setFormData({ name: "", category: "", size: "", color: "", price: "" });
-  };
+    try {
+      const response = await axios.post("http://localhost:4001/api/products/", {
+        productName,
+        category,
+        size,
+        color,
+        price: Number(price),
+        stock: Number(stock),
+        storeId,
+      });
 
-  const handleEdit = (product) => {
-    setFormData(product);
-    setEditId(product.id);
-  };
+      setProducts([...products, response.data.product]);
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure?")) {
-      setProducts(products.filter(p => p.id !== id));
+      setFormData({
+        productName: "",
+        category: "",
+        size: "",
+        color: "",
+        price: "",
+        stock: "",
+      });
+
+      alert("Product added successfully.");
+    } catch (error) {
+      console.error("Failed to add product:", error.response?.data || error.message);
+      alert("Error adding product.");
     }
   };
 
@@ -57,14 +76,95 @@ const ManagerProductManager = () => {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Product Management</h2>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8 bg-white p-4 rounded shadow">
-        <input type="text" name="name" placeholder="Product Name" value={formData.name} onChange={handleChange} required className="border p-2 rounded" />
-        <input type="text" name="category" placeholder="Category" value={formData.category} onChange={handleChange} required className="border p-2 rounded" />
-        <input type="text" name="size" placeholder="Size (e.g., 1L, 100g)" value={formData.size} onChange={handleChange} className="border p-2 rounded" />
-        <input type="text" name="color" placeholder="Color (if any)" value={formData.color} onChange={handleChange} className="border p-2 rounded" />
-        <input type="number" name="price" placeholder="Price" value={formData.price} onChange={handleChange} required className="border p-2 rounded" />
-        <button type="submit" className="bg-blue-600 text-white rounded px-4 py-2">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8 bg-white p-4 rounded shadow"
+      >
+        <select
+          name="productName"
+          value={formData.productName}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded bg-white text-black col-span-full md:col-span-2"
+        >
+          <option value="">Select Product Name</option>
+          {productNames.map((p) => (
+            <option key={p._id} value={p._id}>
+  {p.productName}
+</option>
+
+          ))}
+        </select>
+
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded bg-white text-black col-span-full md:col-span-1"
+        >
+          <option value="">Select Category</option>
+          {categories.map((cat) => (
+            <option key={cat._id} value={cat._id}>
+              {cat.categoryName}
+            </option>
+          ))}
+        </select>
+
+        <select
+          name="size"
+          value={formData.size}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded bg-white text-black col-span-full md:col-span-1"
+        >
+          <option value="">Select Size</option>
+          {sizes.map((size) => (
+            <option key={size._id} value={size._id}>
+              {size.sizeName}
+            </option>
+          ))}
+        </select>
+
+        <select
+          name="color"
+          value={formData.color}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded bg-white text-black col-span-full md:col-span-1"
+        >
+          <option value="">Select Color</option>
+          {colors.map((color) => (
+            <option key={color._id} value={color._id}>
+              {color.colorName}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="number"
+          name="price"
+          placeholder="Price"
+          value={formData.price}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded col-span-full md:col-span-1"
+        />
+
+        <input
+          type="number"
+          name="stock"
+          placeholder="Stock"
+          value={formData.stock}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded col-span-full md:col-span-1"
+        />
+
+        <button
+          type="submit"
+          className="bg-blue-600 text-white rounded px-4 py-2 col-span-full md:col-span-1"
+        >
           {editId ? "Update" : "Add"}
         </button>
       </form>
@@ -79,26 +179,25 @@ const ManagerProductManager = () => {
               <th className="py-2 px-4">Size</th>
               <th className="py-2 px-4">Color</th>
               <th className="py-2 px-4">Price (₹)</th>
-              <th className="py-2 px-4">Actions</th>
+              <th className="py-2 px-4">Stock</th>
             </tr>
           </thead>
           <tbody>
             {products.map((product) => (
-              <tr key={product.id} className="border-t">
-                <td className="py-2 px-4">{product.name}</td>
-                <td className="py-2 px-4">{product.category}</td>
-                <td className="py-2 px-4">{product.size}</td>
-                <td className="py-2 px-4">{product.color || "-"}</td>
+              <tr key={product._id || product.id} className="border-t">
+<td className="py-2 px-4">{product.productName?.productName || "-"}</td>
+                <td className="py-2 px-4">{product.category?.categoryName || "-"}</td>
+                <td className="py-2 px-4">{product.size?.sizeName || "-"}</td>
+                <td className="py-2 px-4">{product.color?.colorName || "-"}</td>
                 <td className="py-2 px-4">₹{product.price}</td>
-                <td className="py-2 px-4 flex gap-2">
-                  <button onClick={() => handleEdit(product)} className="text-blue-600 hover:underline">Edit</button>
-                  <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:underline">Delete</button>
-                </td>
+                <td className="py-2 px-4">{product.stock}</td>
               </tr>
             ))}
             {products.length === 0 && (
               <tr>
-                <td colSpan="6" className="py-4 text-center text-gray-500">No products found.</td>
+                <td colSpan="6" className="py-4 text-center text-gray-500">
+                  No products found.
+                </td>
               </tr>
             )}
           </tbody>
