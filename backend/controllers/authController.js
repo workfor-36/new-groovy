@@ -88,3 +88,42 @@ console.log("JWT_SECRET used in login route:", process.env.JWT_SECRET);
   });
 
 };
+
+
+
+
+
+// GET /api/cashier/profile
+export const getCashierProfile = async (req, res) => {
+  try {
+    const cashier = req.user; // Already set by protectCashier
+    res.json({
+      name: cashier.name,
+      email: cashier.email,
+      storeId: cashier.storeId?._id,
+      storeName: cashier.storeId?.storeName,
+    });
+  } catch (error) {
+    console.error("Error fetching cashier profile:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+
+
+export const getManagerProfile = async (req, res) => {
+  try {
+    const manager = req.user; // Already set by protectCashier
+    res.json({
+      name: manager.name,
+      email: manager.email,
+      storeId: manager.storeId?._id,
+      storeName: manager.storeId?.storeName,
+    });
+  } catch (error) {
+    console.error("Error fetching cashier profile:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

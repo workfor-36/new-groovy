@@ -1,2 +1,5 @@
 @import "tailwindcss";
 @tailwind utilities;
+{
+  color: black !important;
+}

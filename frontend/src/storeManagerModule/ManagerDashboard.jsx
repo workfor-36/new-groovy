@@ -1,79 +1,72 @@
-import DataTable from 'react-data-table-component';
-import React from 'react';
-// Sample dashboard data (replace with backend data)
-const dashboardData = {
-  totalBillsToday: 42,
-  totalItemsSold: 138,
-  cashCollected: "₹ 10,200",
-  topSellingProducts: [
-    { name: "T-Shirt", sold: 38 },
-    { name: "Sneakers", sold: 24 },
-    { name: "Cap", sold: 19 },
-  ],
-  lowSoldProducts: [
-    { name: "T-Shirt", sold: 38 },
-    { name: "Sneakers", sold: 24 },
-    { name: "Cap", sold: 19 },
-  ],
-};
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
-function ManagerDashBoard() {
-   const { totalBillsToday, totalItemsSold, cashCollected, topSellingProducts, lowSoldProducts } = dashboardData;
+const ManagerDashboard = () => {
+  const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-   const productColumns = [
-    {
-      name: "Product Name",
-      selector: row => row.name
-    },
-    {
-      name: "Units Sold",
-      selector: row => row.sold
-    }
-  ];
+  useEffect(() => {
+    const fetchReport = async () => {
+      const storeId = Cookies.get("storeId");
+      if (!storeId) {
+        setError("Store ID not found in cookies.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await axios.get(
+          `http://localhost:4001/api/reports/store/${storeId}`,
+          { withCredentials: true }
+        );
+        setReport(res.data);
+      } catch (err) {
+        console.error("Error fetching report:", err);
+        setError("Failed to load dashboard report.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReport();
+  }, []);
+
+  if (loading) {
+    return <div className="p-6 text-gray-600">Loading manager dashboard...</div>;
+  }
+
+  if (error) {
+    return <div className="p-6 text-red-600 font-semibold">{error}</div>;
+  }
+
+  if (!report) {
+    return <div className="p-6 text-red-600 font-semibold">No data found.</div>;
+  }
+
   return (
-    <div className="px-4 py-6 lg:px-12">
-      <h2 className="text-2xl font-semibold mb-6">Admin Dashboard</h2>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-6">Welcome, Manager!</h2>
 
-      {/* Dashboard Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow-md p-5">
-          <h3 className="text-gray-600 text-sm mb-1">Total Bills Today</h3>
-          <p className="text-2xl font-semibold text-blue-600">{totalBillsToday}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="bg-white shadow-md rounded-lg p-5">
+          <p className="text-sm text-gray-500">Bills Today</p>
+          <p className="text-2xl font-bold text-blue-600">{report.dailySales}</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-5">
-          <h3 className="text-gray-600 text-sm mb-1">Total Items Sold</h3>
-          <p className="text-2xl font-semibold text-green-600">{totalItemsSold}</p>
+        <div className="bg-white shadow-md rounded-lg p-5">
+          <p className="text-sm text-gray-500">Cash Collected Today</p>
+          <p className="text-2xl font-bold text-green-600">₹{report.dailyRevenue.toLocaleString()}</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-5">
-          <h3 className="text-gray-600 text-sm mb-1">Total Cash Collected Today</h3>
-          <p className="text-2xl font-semibold text-yellow-600">{cashCollected}</p>
+        <div className="bg-white shadow-md rounded-lg p-5">
+          <p className="text-sm text-gray-500">GST Collected</p>
+          <p className="text-2xl font-bold text-orange-600">₹{report.gstCollected.toLocaleString()}</p>
         </div>
-
-        
-      </div>
-
-      {/* Top Sold Products Table */}
-      <div className="bg-white rounded-lg shadow-md p-6 m-1">
-        <h3 className="text-lg font-semibold mb-4">Top Sold Products Today</h3>
-        <DataTable
-        columns={productColumns}
-        data={topSellingProducts}
-        pagination
-        highlightOnHover
-        />
-      </div>
-
-        <div className="bg-white rounded-lg shadow-md p-6 m-1">
-        <h3 className="text-lg font-semibold mb-4">Low Sold Products Today</h3>
-        <DataTable
-        columns={productColumns}
-        data={lowSoldProducts}
-        />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ManagerDashBoard
+export default ManagerDashboard;

@@ -120,19 +120,24 @@ const CashierBilling = () => {
   };
 
   const generatePDF = (ref) => {
-    const input = ref?.current;
-    if (!input) return;
+  const input = ref?.current;
+  if (!input) {
+    alert("PDF content is not available yet.");
+    return;
+  }
 
-    html2canvas(input).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF();
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save("invoice.pdf");
-    });
-  };
+  console.log("Generating PDF from:", input); // ✅ Check if populated
+
+  html2canvas(input).then((canvas) => {
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF();
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("invoice.pdf");
+  });
+};
 
   const handleCheckout = async () => {
     if (cart.length === 0) return;
@@ -180,7 +185,7 @@ const CashierBilling = () => {
 
       setTimeout(() => {
         generatePDF(cartInvoiceRef);
-      }, 300);
+      }, 700);
 
       setCart([]);
       setCustomerName("");
@@ -247,7 +252,11 @@ const CashierBilling = () => {
         </button>
       </div>
 
-      <div ref={cartInvoiceRef} className="bg-white p-6 shadow rounded">
+<div
+  ref={cartInvoiceRef}
+  style={{ color: "#000", backgroundColor: "#fff" }}
+  className="bg-white p-6 shadow rounded"
+>
         <h2 className="text-xl font-semibold mb-4">Invoice</h2>
         <table className="w-full table-auto border">
           <thead>
@@ -267,7 +276,7 @@ const CashierBilling = () => {
               return (
                 <tr key={index}>
                   <td className="border px-4 py-2">
-                    {item.productName || "Unnamed Product"} |{" "}
+{item.product?.productName?.productName || item.product?.name || "Unnamed Product"}
                     {item.category?.categoryName || "No Category"}
                   </td>
                   <td className="border px-4 py-2">{item.quantity}</td>
@@ -330,7 +339,11 @@ const CashierBilling = () => {
 
       {/* Past Bill View */}
       {selectedBill && (
-        <div ref={pastBillRef} className="bg-white p-6 mt-6 shadow rounded">
+<div
+  ref={pastBillRef}
+  style={{ color: "#000", backgroundColor: "#fff" }}
+  className="bg-white p-6 mt-6 shadow rounded"
+>
           <h3 className="text-lg font-bold mb-2">Bill Details</h3>
           <p>
             <strong>Customer:</strong> {selectedBill.customerName}

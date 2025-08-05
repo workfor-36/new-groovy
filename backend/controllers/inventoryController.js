@@ -2,16 +2,28 @@ import Inventory from "../models/inventoryModel.js";
 import Product from "../models/productModel.js";
 import Store from "../models/storeModel.js";
 import AuditLog from "../models/auditLogModel.js";
-
+import ProductName from "../models/productNameModel.js";
 // GET /api/inventory
 export const getAllInventory = async (req, res) => {
   try {
-    const inventories = await Inventory.find().populate("product").populate("store");
+    const inventories = await Inventory.find()
+      .populate({
+        path: "product",
+        populate: {
+          path: "productName", // this comes from your productModel
+          model: "ProductName",
+        },
+      })
+      .populate("store")
+      .populate("category");
+
     res.json(inventories);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Failed to fetch inventory" });
   }
 };
+
 
 // POST /api/inventory/adjust
 export const adjustStock = async (req, res) => {

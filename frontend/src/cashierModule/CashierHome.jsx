@@ -8,35 +8,33 @@ import {
   PackageSearch,
 } from "lucide-react";
 
-import Dashboard from './Dashboard';
 import CustomerList from './CustomerList';
 import CashierBilling from './CashierBilling';
 
 
 function CashierHome() {
-  const [activePage, setActivePage] = useState("Dashboard");
+  const [activePage, setActivePage] = useState("billing");
 
   const renderContent = () => {
     switch (activePage) {
       
-      case "dashboard": return <Dashboard />;
+      case "billing": return <CashierBilling />;
             case "customers": return <CustomerList />;
-            case "billing": return <CashierBilling />;
 
-      default: return <Dashboard/>;
+      default: return <CashierBilling/>;
     }
   };
 
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar>
-        
         <SidebarItem
           icon={<ShoppingCart size={20} />}
-          text="Dashboard"
-          active={activePage === "dashboard"}
-          onClick={() => setActivePage("dashboard")}
+          text="Billing"
+          active={activePage === "billing"}
+          onClick={() => setActivePage("billing")}
         />
+       
         <SidebarItem
           icon={<ShoppingCart size={20} />}
           text="Customers"
@@ -44,12 +42,7 @@ function CashierHome() {
           onClick={() => setActivePage("customers")}
         />
 
-        <SidebarItem
-          icon={<ShoppingCart size={20} />}
-          text="Billing"
-          active={activePage === "billing"}
-          onClick={() => setActivePage("billing")}
-        />
+        
         
         
       </Sidebar>

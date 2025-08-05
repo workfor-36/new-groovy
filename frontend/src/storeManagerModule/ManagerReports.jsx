@@ -1,110 +1,113 @@
-import React from "react";
-
-const dummyReports = [
-  {
-    id: "STR001",
-    name: "Store A",
-    location: "Mumbai",
-    manager: "Amit Singh",
-    cashiers: ["Priya", "Rohit"],
-    report: {
-      sales: { daily: 12000, weekly: 84000, monthly: 342000 },
-      revenue: { daily: 11500, weekly: 82000, monthly: 336000 },
-      gstCollected: 3200,
-      gstPending: 800,
-      topProducts: ["Soap", "Shampoo", "Chips"],
-    },
-  },
-  {
-    id: "STR002",
-    name: "Store B",
-    location: "Pune",
-    manager: "Nisha Mehra",
-    cashiers: ["Karan"],
-    report: {
-      sales: { daily: 9500, weekly: 60500, monthly: 228000 },
-      revenue: { daily: 9100, weekly: 59000, monthly: 223000 },
-      gstCollected: 2800,
-      gstPending: 500,
-      topProducts: ["Toothpaste", "Oil", "Milk"],
-    },
-  },
-];
-
-// You can dynamically set this based on login later
-const loggedInManager = "Nisha Mehra"; // hardcoded for now
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Cookies from "js-cookie"; // ✅ NEW: to read cookies
 
 const ManagerReports = () => {
-  const store = dummyReports.find((s) => s.manager === loggedInManager);
+  const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  if (!store) {
+  useEffect(() => {
+    const fetchReport = async () => {
+      const storeId = Cookies.get("storeId"); // ✅ Get storeId from cookie
+      if (!storeId) {
+        setError("Store ID not found in cookies.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        console.log("Fetching report for storeId:", storeId);
+        const res = await axios.get(
+          `http://localhost:4001/api/reports/store/${storeId}`,
+          { withCredentials: true }
+        );
+        console.log("Fetched report successfully:", res.data);
+        setReport(res.data);
+      } catch (err) {
+        console.error("❌ Failed to fetch report:", err);
+        if (err.response) {
+          console.error("🔴 Server responded with:", err.response.data);
+        } else if (err.request) {
+          console.error("🟠 No response received. Request sent:", err.request);
+        } else {
+          console.error("🟡 Error setting up request:", err.message);
+        }
+        setError("Failed to load report. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReport();
+  }, []);
+
+  if (loading) {
     return (
       <div className="p-6">
-        <h2 className="text-xl font-bold text-red-600">No assigned store found.</h2>
+        <h2 className="text-xl font-semibold text-gray-600">Loading store report...</h2>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <h2 className="text-xl font-bold text-red-600">{error}</h2>
+      </div>
+    );
+  }
+
+  if (!report) {
+    return (
+      <div className="p-6">
+        <h2 className="text-xl font-bold text-red-600">No report data available.</h2>
       </div>
     );
   }
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">Store Report - {store.name}</h2>
+      <h2 className="text-2xl font-bold mb-6">Store Report</h2>
 
       <div className="bg-white p-5 rounded-lg shadow">
-        <div className="mb-2">
-          <h3 className="text-xl font-semibold text-teal-700">{store.name}</h3>
-          <p className="text-gray-600">{store.location}</p>
-          <p className="text-sm text-gray-500">Store ID: {store.id}</p>
-        </div>
-
-        <div className="mb-2">
-          <p><strong>Manager:</strong> {store.manager}</p>
-          <p><strong>Cashiers:</strong> {store.cashiers.join(", ")}</p>
-        </div>
+        
 
         <div className="grid grid-cols-2 gap-3 mt-4 text-sm">
           <div className="bg-gray-100 p-3 rounded">
             <p className="text-gray-600">Daily Sales</p>
-            <p className="text-lg font-bold text-blue-600">₹{store.report.sales.daily.toLocaleString()}</p>
+            <p className="text-lg font-bold text-blue-600">{report.dailySales.toLocaleString()}</p>
           </div>
           <div className="bg-gray-100 p-3 rounded">
             <p className="text-gray-600">Weekly Sales</p>
-            <p className="text-lg font-bold text-blue-600">₹{store.report.sales.weekly.toLocaleString()}</p>
+            <p className="text-lg font-bold text-blue-600">{report.weeklySales.toLocaleString()}</p>
           </div>
           <div className="bg-gray-100 p-3 rounded">
             <p className="text-gray-600">Monthly Sales</p>
-            <p className="text-lg font-bold text-blue-600">₹{store.report.sales.monthly.toLocaleString()}</p>
+            <p className="text-lg font-bold text-blue-600">{report.monthlySales.toLocaleString()}</p>
           </div>
 
           <div className="bg-gray-100 p-3 rounded">
             <p className="text-gray-600">Daily Revenue</p>
-            <p className="text-lg font-bold text-green-600">₹{store.report.revenue.daily.toLocaleString()}</p>
+            <p className="text-lg font-bold text-green-600">₹{report.dailyRevenue.toLocaleString()}</p>
           </div>
           <div className="bg-gray-100 p-3 rounded">
             <p className="text-gray-600">Weekly Revenue</p>
-            <p className="text-lg font-bold text-green-600">₹{store.report.revenue.weekly.toLocaleString()}</p>
+            <p className="text-lg font-bold text-green-600">₹{report.weeklyRevenue.toLocaleString()}</p>
           </div>
           <div className="bg-gray-100 p-3 rounded">
             <p className="text-gray-600">Monthly Revenue</p>
-            <p className="text-lg font-bold text-green-600">₹{store.report.revenue.monthly.toLocaleString()}</p>
+            <p className="text-lg font-bold text-green-600">₹{report.monthlyRevenue.toLocaleString()}</p>
           </div>
 
           <div className="bg-gray-100 p-3 rounded">
             <p className="text-gray-600">GST Collected</p>
-            <p className="text-lg font-bold text-orange-600">₹{store.report.gstCollected}</p>
+            <p className="text-lg font-bold text-orange-600">₹{report.gstCollected.toLocaleString()}</p>
           </div>
           <div className="bg-gray-100 p-3 rounded">
             <p className="text-gray-600">GST Pending</p>
-            <p className="text-lg font-bold text-red-600">₹{store.report.gstPending}</p>
+            <p className="text-lg font-bold text-red-600">₹{report.gstPending.toLocaleString()}</p>
           </div>
-        </div>
-
-        <div className="mt-4">
-          <p className="text-sm text-gray-500">Top Products:</p>
-          <ul className="list-disc ml-5 text-gray-700 text-sm">
-            {store.report.topProducts.map((product, idx) => (
-              <li key={idx}>{product}</li>
-            ))}
-          </ul>
         </div>
       </div>
     </div>

@@ -1,5 +1,7 @@
 import Bill from "../models/billModel.js";
 import Store from "../models/storeModel.js";
+import mongoose from "mongoose";
+
 
 // Utility for date ranges
 const getDateRange = (daysAgo) => {
@@ -18,7 +20,7 @@ const aggregateSales = async (filter) => {
         _id: null,
         totalSales: { $sum: "$totalAmount" },
         billCount: { $sum: 1 },
-        gstCollected: { $sum: { $multiply: ["$totalAmount", 0.05] } }, // Assuming 5% GST
+gstCollected: { $sum: "$taxAmount" }
       },
     },
   ]);
@@ -60,14 +62,17 @@ export const getStoreReport = async (req, res) => {
 export const getAllStoreReports = async (req, res) => {
   try {
     const stores = await Store.find();
+    console.log("Stores found:", stores.length);
+
     const reportPromises = stores.map((store) =>
-      getStoreSummary(store._id).then((report) => ({
-        ...report,
-        storeId: store.storeId,
-        storeName: store.storeName,
-        location: store.location,
-      }))
-    );
+  getStoreSummary(store._id).then((report) => ({
+    ...report,
+    storeId: store.storeId, // custom store ID (e.g. "SR1")
+    storeName: store.storeName,
+    location: store.location,
+  }))
+);
+
     const reports = await Promise.all(reportPromises);
     res.json(reports);
   } catch (err) {
@@ -76,15 +81,22 @@ export const getAllStoreReports = async (req, res) => {
   }
 };
 
+
 const getStoreSummary = async (storeId) => {
+  const validObjectId = storeId;
+
+  console.log("Processing store ID:", storeId);
+
+  if (!validObjectId) throw new Error(`Invalid ObjectId for store: ${storeId}`);
+
   const { from: dailyFrom, to } = getDateRange(1);
   const { from: weeklyFrom } = getDateRange(7);
   const { from: monthlyFrom } = getDateRange(30);
 
   const [daily, weekly, monthly] = await Promise.all([
-    aggregateSales({ store: storeId, createdAt: { $gte: dailyFrom, $lte: to } }),
-    aggregateSales({ store: storeId, createdAt: { $gte: weeklyFrom, $lte: to } }),
-    aggregateSales({ store: storeId, createdAt: { $gte: monthlyFrom, $lte: to } }),
+    aggregateSales({ store: validObjectId, createdAt: { $gte: dailyFrom, $lte: to } }),
+    aggregateSales({ store: validObjectId, createdAt: { $gte: weeklyFrom, $lte: to } }),
+    aggregateSales({ store: validObjectId, createdAt: { $gte: monthlyFrom, $lte: to } }),
   ]);
 
   return {

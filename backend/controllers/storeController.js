@@ -5,12 +5,12 @@ import Manager from "../models/managerModel.js";
 // Create New Store
 export const createStore = async (req, res) => {
   try {
-    const { storeId, storeName, location } = req.body;
+    const { storeIId, storeName, location } = req.body;
 
     const existing = await Store.findOne({ storeId });
     if (existing) return res.status(400).json({ message: "Store ID already exists" });
 
-    const store = new Store({ storeId, storeName, location });
+    const store = new Store({ storeIId, storeName, location });
     await store.save();
     res.status(201).json(store);
   } catch (err) {
