@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
+import jsPDF  from "jspdf";
+import autoTable from 'jspdf-autotable';
 import Cookies from "js-cookie";
 
 const CashierBilling = () => {
@@ -119,25 +119,85 @@ const CashierBilling = () => {
     }, 0);
   };
 
-  const generatePDF = (ref) => {
-  const input = ref?.current;
-  if (!input) {
-    alert("PDF content is not available yet.");
-    return;
+ const generatePDF = (dataRef, dataType = "cart") => {
+  const doc = new jsPDF();
+  const title = dataType === "cart" ? "Invoice" : "Groovy Bills";
+
+  doc.setFontSize(18);
+  doc.text(title, 14, 15);
+
+  if (dataType === "cart") {
+    doc.setFontSize(12);
+    doc.text(`Customer: ${customerName}`, 14, 25);
+    doc.text(`Phone: ${customerPhone}`, 14, 32);
+
+    const tableData = cart.map((item) => {
+      const price = item.product?.price || 0;
+      const subtotal = price * item.quantity;
+      const tax = calculateTaxAmount(item);
+      const total = subtotal + tax;
+      return [
+        item.product?.productName?.productName || item.product?.name || "N/A",
+        item.quantity,
+        `₹${price}`,
+        `₹${tax.toFixed(2)}`,
+        `₹${total.toFixed(2)}`,
+      ];
+    });
+
+    autoTable(doc,{
+      head: [["Product", "Qty", "Price", "Tax", "Total"]],
+      body: tableData,
+      startY: 40,
+    });
+
+    doc.text(
+      `Grand Total: ₹${calculateTotalWithTax().toFixed(2)}`,
+      14,
+      doc.lastAutoTable.finalY + 10
+    );
+  } else if (dataType === "past" && selectedBill) {
+    doc.setFontSize(12);
+    doc.text(`Customer: ${selectedBill.customerName}`, 14, 25);
+    doc.text(`Phone: ${selectedBill.customerPhone}`, 14, 32);
+    doc.text(
+      `Date: ${new Date(selectedBill.createdAt).toLocaleString()}`,
+      14,
+      39
+    );
+
+    const tableData = selectedBill.items.map((item) => {
+      const taxAmount = item.taxes.reduce((acc, t) => acc + t.taxAmount, 0);
+      return [
+        item.productName?.productName || "Unnamed Product",
+        item.quantity,
+        `₹${item.price}`,
+        `₹${taxAmount}`,
+        `₹${item.total + taxAmount}`,
+      ];
+    });
+
+   autoTable(doc, {
+  head: [["Product", "Qty", "Price", "Tax", "Total"]],
+  body: tableData, // make sure this does NOT have index
+  startY: 45,
+  // Add this to ensure no extra column is shown
+  showHead: 'everyPage',
+  styles: { halign: 'center' },
+  theme: 'grid'
+});
+
+
+    doc.text(
+      `Grand Total: ₹${selectedBill.grandTotal}`,
+      14,
+      doc.lastAutoTable.finalY + 10
+    );
   }
 
-  console.log("Generating PDF from:", input); // ✅ Check if populated
-
-  html2canvas(input).then((canvas) => {
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF();
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("invoice.pdf");
-  });
+  doc.save(`${title}.pdf`);
 };
+
 
   const handleCheckout = async () => {
     if (cart.length === 0) return;
@@ -297,12 +357,7 @@ const CashierBilling = () => {
       </div>
 
       <div className="mt-6 flex gap-4">
-        <button
-          onClick={() => generatePDF(cartInvoiceRef)}
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-        >
-          Generate Invoice
-        </button>
+
 
         <button
           onClick={handleCheckout}
@@ -396,7 +451,7 @@ const CashierBilling = () => {
           </div>
 
           <button
-            onClick={() => generatePDF(pastBillRef)}
+            onClick={() => generatePDF(null,"past")}
             className="bg-blue-600 mt-4 text-white px-6 py-2 rounded hover:bg-blue-700"
           >
             Download PDF
