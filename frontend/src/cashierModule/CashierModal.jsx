@@ -5,7 +5,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
-const CashierModal = ({ isOpen, closeModal }) => {
+const CashierModal = ({ isOpen}) => {
   const modalRef = useRef(null);
   const navigate = useNavigate(); // ✅ Moved inside the component
 
@@ -15,22 +15,6 @@ const CashierModal = ({ isOpen, closeModal }) => {
   const [error, setError] = useState("");
 
   const togglePasswordView = () => setShowPassword(!showPassword);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        closeModal();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen, closeModal]);
 
   const handleLogin = async () => {
   try {
@@ -52,6 +36,10 @@ const CashierModal = ({ isOpen, closeModal }) => {
     setError(err.response?.data?.message || "Login failed");
   }
 };
+
+const handleClose = ()=>{
+  window.location.href="/"
+}; 
 
   if (!isOpen) return null;
 
@@ -118,7 +106,7 @@ const CashierModal = ({ isOpen, closeModal }) => {
           </button>
           <button
             className="flex-1 p-2 bg-cyan-900 rounded-xl hover:bg-cyan-950 text-sm md:text-base"
-            onClick={closeModal}
+            onClick={handleClose}
           >
             Close
           </button>

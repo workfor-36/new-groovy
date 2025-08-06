@@ -4,7 +4,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import React,{ useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const AdminModal = ({ isOpen, closeModal }) => {
+const AdminModal = ({ isOpen}) => {
   const modalRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -14,27 +14,10 @@ const AdminModal = ({ isOpen, closeModal }) => {
 
   const togglePasswordView = () => setShowPassword(!showPassword);
 
-  // Close modal if clicked outside the modal content
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        closeModal();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen, closeModal]);
-
-const handleLogin = async (e) => {
+ const handleLogin = async (e) => {
   e.preventDefault();
   setLoading(true);
-  setError("");  // Reset any previous error
+  setError("");  
 
   try {
     const response = await axios.post(
@@ -49,7 +32,6 @@ const handleLogin = async (e) => {
     );
 
     if (response.status === 200) {
-      // Successfully logged in
       window.location.href = "/admin";  // Redirect to admin dashboard
     }
   } catch (err) {
@@ -59,6 +41,9 @@ const handleLogin = async (e) => {
   }
 };
 
+const handleClose = ()=>{
+  window.location.href="/"
+}; 
 
   if (!isOpen) return null;
 
@@ -128,7 +113,7 @@ const handleLogin = async (e) => {
           </button>
           <button
             className="flex-1 p-2 bg-cyan-900 rounded-xl hover:bg-cyan-950 text-sm md:text-base cursor-pointer"
-            onClick={closeModal}
+            onClick={handleClose}
           >
             Close
           </button>

@@ -1,11 +1,8 @@
 import Sidebar, { SidebarItem } from './Sidebar';
 import React,{ useState } from 'react';
 import {
-  LayoutDashboard,
-  ShoppingCart,
   FileText,
-  Users,
-  PackageSearch,
+  Users
 } from "lucide-react";
 
 import CustomerList from './CustomerList';
@@ -29,14 +26,14 @@ function CashierHome() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar>
         <SidebarItem
-          icon={<ShoppingCart size={20} />}
+          icon={<FileText size={20} />}
           text="Billing"
           active={activePage === "billing"}
           onClick={() => setActivePage("billing")}
         />
        
         <SidebarItem
-          icon={<ShoppingCart size={20} />}
+          icon={<Users size={20} />}
           text="Customers"
           active={activePage === "customers"}
           onClick={() => setActivePage("customers")}

@@ -1,7 +1,10 @@
 import Sidebar, { SidebarItem} from './Sidebar';
 import React ,{ useState } from 'react';
 import {
-  Receipt,
+  ReceiptText,
+  Package,
+  PackagePlus,
+  ListPlus,
   Warehouse,
   LayoutDashboard
 } from "lucide-react"
@@ -33,10 +36,10 @@ function StoreManagerHome() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar>
         <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={activePage === "Dashboard"} onClick={() => setActivePage("Dashboard")} />
-               <SidebarItem icon={<LayoutDashboard size={20} />} text="Products" active={activePage === "products"} onClick={() => setActivePage("products")} />
-               <SidebarItem icon={<LayoutDashboard size={20} />} text="Category" active={activePage === "Category"} onClick={() => setActivePage("Category")} />
-               <SidebarItem icon={<LayoutDashboard size={20} />} text="Inventory" active={activePage === "inventory"} onClick={() => setActivePage("inventory")} />
-               <SidebarItem icon={<LayoutDashboard size={20} />} text="Reports" active={activePage === "reports"} onClick={() => setActivePage("reports")} />
+        <SidebarItem icon={<PackagePlus size={20} />} text="Products" active={activePage === "products"} onClick={() => setActivePage("products")} />
+        <SidebarItem icon={<ListPlus size={20} />} text="Category" active={activePage === "Category"} onClick={() => setActivePage("Category")} />
+        <SidebarItem icon={<Package size={20} />} text="Inventory" active={activePage === "inventory"} onClick={() => setActivePage("inventory")} />
+        <SidebarItem icon={<ReceiptText size={20} />} text="Reports" active={activePage === "reports"} onClick={() => setActivePage("reports")} />
 
       </Sidebar>
 

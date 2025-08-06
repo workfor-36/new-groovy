@@ -2,12 +2,12 @@ import Sidebar, { SidebarItem} from './Sidebar'
 import React,{ useState } from 'react';
 import {
   Store,
-  Receipt,
-  Warehouse,
-  UserCog, 
-  MapPinPlus,
+  HousePlus,
+  UserRoundPlus,
+  ReceiptText,
+  Percent,
+  Package,
   LayoutDashboard,
-  Settings,
 } from "lucide-react"
 
 import AdminAction from './AdminAction'; 
@@ -32,11 +32,11 @@ function AdminHome() {
     switch (activePage) {
       case "Dashboard": return <AdminDashBoard/>;
       case "CreateStore": return <CreateStore/>;
-            case "action": return <AdminAction />;
-            case "stores": return <AdminStoreList />;
-            case "reports": return<AdminReports/>
-            case "tax": return<AdminTax/>
-            case "Inventory": return<AdminInventoryDashboard/>
+      case "action": return <AdminAction />;
+      case "stores": return <AdminStoreList />;
+      case "reports": return<AdminReports/>
+      case "tax": return<AdminTax/>
+      case "Inventory": return<AdminInventoryDashboard/>
       default: return <AdminDashBoard/>;
     }
   };
@@ -45,13 +45,12 @@ function AdminHome() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar>
         <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" active={activePage === "Dashboard"} onClick={() => setActivePage("Dashboard")} />
-                <SidebarItem icon={<LayoutDashboard size={20} />} text="Create Store" active={activePage === "CreateStore"} onClick={() => setActivePage("CreateStore")} />
-
-        <SidebarItem icon={<Store size={20} />} text="Assign" active={activePage === "action"} onClick={() => setActivePage("action")} />
-                <SidebarItem icon={<Store size={20} />} text="Stores" active={activePage === "stores"} onClick={() => setActivePage("stores")} />
-                <SidebarItem icon={<Store size={20} />} text="Reports" active={activePage === "reports"} onClick={() => setActivePage("reports")} />
-                <SidebarItem icon={<Store size={20} />} text="Tax" active={activePage === "tax"} onClick={() => setActivePage("tax")} />
-                <SidebarItem icon={<Store size={20} />} text="Inventory" active={activePage === "Inventory"} onClick={() => setActivePage("Inventory")} />
+        <SidebarItem icon={<HousePlus size={20} />} text="Create Store" active={activePage === "CreateStore"} onClick={() => setActivePage("CreateStore")} />
+        <SidebarItem icon={<UserRoundPlus size={20} />} text="Assign" active={activePage === "action"} onClick={() => setActivePage("action")} />
+        <SidebarItem icon={<Store size={20} />} text="Stores" active={activePage === "stores"} onClick={() => setActivePage("stores")} />
+        <SidebarItem icon={<ReceiptText size={20} />} text="Reports" active={activePage === "reports"} onClick={() => setActivePage("reports")} />
+        <SidebarItem icon={<Percent size={20} />} text="Tax" active={activePage === "tax"} onClick={() => setActivePage("tax")} />
+        <SidebarItem icon={<Package size={20} />} text="Inventory" active={activePage === "Inventory"} onClick={() => setActivePage("Inventory")} />
 
       </Sidebar>
 
