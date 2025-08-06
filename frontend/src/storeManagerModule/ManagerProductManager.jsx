@@ -7,7 +7,7 @@ const ManagerProductManager = () => {
   const [categories, setCategories] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [colors, setColors] = useState([]);
-  const [productNames, setProductNames] = useState([]); // ✅ Product names
+  const [productNames, setProductNames] = useState([]);
 
   const [formData, setFormData] = useState({
     productName: "",
@@ -73,26 +73,25 @@ const ManagerProductManager = () => {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Product Management</h2>
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <h2 className="text-3xl font-bold mb-6 text-gray-800">Product Management</h2>
 
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8 bg-white p-4 rounded shadow"
+        className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-10 bg-white p-6 rounded-xl shadow"
       >
         <select
           name="productName"
           value={formData.productName}
           onChange={handleChange}
           required
-          className="border p-2 rounded bg-white text-black col-span-full md:col-span-2"
+          className="col-span-full md:col-span-2 border p-2 rounded text-black"
         >
           <option value="">Select Product Name</option>
           {productNames.map((p) => (
             <option key={p._id} value={p._id}>
-  {p.productName}
-</option>
-
+              {p.productName}
+            </option>
           ))}
         </select>
 
@@ -101,7 +100,7 @@ const ManagerProductManager = () => {
           value={formData.category}
           onChange={handleChange}
           required
-          className="border p-2 rounded bg-white text-black col-span-full md:col-span-1"
+          className="col-span-full md:col-span-1 border p-2 rounded text-black"
         >
           <option value="">Select Category</option>
           {categories.map((cat) => (
@@ -116,7 +115,7 @@ const ManagerProductManager = () => {
           value={formData.size}
           onChange={handleChange}
           required
-          className="border p-2 rounded bg-white text-black col-span-full md:col-span-1"
+          className="col-span-full md:col-span-1 border p-2 rounded text-black"
         >
           <option value="">Select Size</option>
           {sizes.map((size) => (
@@ -131,7 +130,7 @@ const ManagerProductManager = () => {
           value={formData.color}
           onChange={handleChange}
           required
-          className="border p-2 rounded bg-white text-black col-span-full md:col-span-1"
+          className="col-span-full md:col-span-1 border p-2 rounded text-black"
         >
           <option value="">Select Color</option>
           {colors.map((color) => (
@@ -148,7 +147,7 @@ const ManagerProductManager = () => {
           value={formData.price}
           onChange={handleChange}
           required
-          className="border p-2 rounded col-span-full md:col-span-1"
+          className="col-span-full md:col-span-1 border p-2 rounded"
         />
 
         <input
@@ -158,34 +157,34 @@ const ManagerProductManager = () => {
           value={formData.stock}
           onChange={handleChange}
           required
-          className="border p-2 rounded col-span-full md:col-span-1"
+          className="col-span-full md:col-span-1 border p-2 rounded"
         />
 
         <button
           type="submit"
-          className="bg-blue-600 text-white rounded px-4 py-2 col-span-full md:col-span-1"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded px-4 py-2 col-span-full md:col-span-1"
         >
           {editId ? "Update" : "Add"}
         </button>
       </form>
 
       {/* Product Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border rounded shadow text-sm">
-          <thead className="bg-gray-100">
+      <div className="overflow-x-auto bg-white rounded-xl shadow">
+        <table className="min-w-full text-sm text-gray-800">
+          <thead className="bg-gray-100 text-left">
             <tr>
-              <th className="py-2 px-4">Name</th>
-              <th className="py-2 px-4">Category</th>
-              <th className="py-2 px-4">Size</th>
-              <th className="py-2 px-4">Color</th>
-              <th className="py-2 px-4">Price (₹)</th>
-              <th className="py-2 px-4">Stock</th>
+              <th className="py-3 px-4">Name</th>
+              <th className="py-3 px-4">Category</th>
+              <th className="py-3 px-4">Size</th>
+              <th className="py-3 px-4">Color</th>
+              <th className="py-3 px-4">Price (₹)</th>
+              <th className="py-3 px-4">Stock</th>
             </tr>
           </thead>
           <tbody>
             {products.map((product) => (
               <tr key={product._id || product.id} className="border-t">
-<td className="py-2 px-4">{product.productName?.productName || "-"}</td>
+                <td className="py-2 px-4">{product.productName?.productName || "-"}</td>
                 <td className="py-2 px-4">{product.category?.categoryName || "-"}</td>
                 <td className="py-2 px-4">{product.size?.sizeName || "-"}</td>
                 <td className="py-2 px-4">{product.color?.colorName || "-"}</td>

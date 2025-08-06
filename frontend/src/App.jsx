@@ -8,7 +8,9 @@ import axios from "axios";
 import AdminHome from './adminModule/AdminHome'
 import StoreManagerHome from './storeManagerModule/StoreManagerHome'
 import CashierHome from './cashierModule/CashierHome'
-
+import ProtectedRoute from './pages/ProtectedRoute'
+import AdminProtectedRoute from './pages/AdminProtectedRoute'
+import AdminModal from './adminModule/AdminModal'
 
 function App() {
   return (
@@ -18,9 +20,10 @@ function App() {
       <Routes>
       <Route path="/" element={<Home/>}/>
             <Route path="/about" element={<About/>}/>
-            <Route path="/admin" element={<AdminHome/>}/>
-                        <Route path="/manager" element={<StoreManagerHome/>}/>
-                        <Route path="/cashier" element={<CashierHome/>}/>
+            <Route path='/admin-login' element={<AdminModal/>}/>
+            <Route path="/admin" element={<AdminProtectedRoute><AdminHome/> </AdminProtectedRoute> }/>
+                        <Route path="/manager" element={<ProtectedRoute allowedRoles={["Manager"]}><StoreManagerHome/></ProtectedRoute>}/>
+                        <Route path="/cashier" element={<ProtectedRoute allowedRoles={["Cashier"]}><CashierHome/></ProtectedRoute>}/>
 
 
       </Routes>

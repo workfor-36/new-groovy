@@ -27,7 +27,7 @@ console.log("JWT_SECRET used in login route:", process.env.JWT_SECRET);
   // ✅ Set as HTTP-only cookie
   res
   .cookie("manager_token", token, {
-    httpOnly: true,
+    httpOnly: false,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -75,7 +75,7 @@ console.log("JWT_SECRET used in login route:", process.env.JWT_SECRET);
   // ✅ Set as HTTP-only cookie
   res
   .cookie("cashier_token", token, {
-    httpOnly: true,
+    httpOnly: false,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
