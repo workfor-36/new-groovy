@@ -4,7 +4,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import React,{ useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const AdminModal = ({ isOpen}) => {
+const AdminModal = ({isOpen}) => {
   const modalRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -93,13 +93,6 @@ const handleClose = ()=>{
           </div>
 
           {error && <p className="text-red-500 text-xs">{error}</p>}
-
-          <p className="text-xs md:text-sm text-gray-500 text-center">
-            Forget Password?{" "}
-            <a href="/">
-              <button className="text-white cursor-pointer pl-1">Click here</button>
-            </a>
-          </p>
         </div>
 
         {/* Buttons */}

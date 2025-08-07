@@ -88,8 +88,8 @@ function Navbar() {
         </ul>
       </nav>
 {/* Modals */}
-      <AdminModal isOpen={showAdmin} closeModal={() => setShowAdmin(false)} />
-      <StoreManagerModal isOpen={showStoreManager} closeModal={() => setShowStoreManager(false)} />
+      <AdminModal isOpen={showAdmin}/>
+      <StoreManagerModal isOpen={showStoreManager} />
       <CashierModal isOpen={showCashier} closeModal={() => setShowCashier(false)} />
 
     </>
