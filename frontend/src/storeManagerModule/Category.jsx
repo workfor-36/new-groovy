@@ -75,7 +75,7 @@ const Category = () => {
         />
         <button
           onClick={() => addItem(type, value, stateSetter, stateList).then(() => setValue(""))}
-          className="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 transition"
+          className="bg-teal-950 hover:bg-teal-900 text-white px-3 py-2 rounded transition"
         >
           Add
         </button>

@@ -183,7 +183,7 @@ const handleAssignStore = async (userId, storeName) => {
           <option value="Cashier">Cashier</option>
           <option value="Manager">Manager</option>
         </select>
-        <button type="submit" className="bg-blue-600 text-white rounded px-4 py-2">
+        <button type="submit" className="bg-teal-950 hover:bg-teal-900 text-white rounded px-4 py-2">
           {editId ? "Update User" : "Add User"}
         </button>
       </form>

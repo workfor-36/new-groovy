@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
 
 function About() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
+         <Navbar/>
+
       {/* Header */}
       <section className="bg-orange-100 py-16">
         <div className="container mx-auto px-6 text-center">

@@ -162,7 +162,7 @@ const ManagerProductManager = () => {
 
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded px-4 py-2 col-span-full md:col-span-1"
+          className="bg-teal-950 hover:bg-teal-900 text-white font-semibold rounded px-4 py-2 col-span-full md:col-span-1"
         >
           {editId ? "Update" : "Add"}
         </button>

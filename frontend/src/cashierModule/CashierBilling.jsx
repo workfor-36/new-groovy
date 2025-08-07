@@ -320,7 +320,7 @@ if (!/^\d{10}$/.test(customerPhone)) {
 
         <button
           onClick={addToCart}
-          className="bg-green-500 text-white px-4 py-2 rounded"
+          className="bg-teal-950 hover:bg-teal-900 text-white px-4 py-2 rounded"
         >
           Add to Cart
         </button>
@@ -376,7 +376,7 @@ if (!/^\d{10}$/.test(customerPhone)) {
         <button
           onClick={handleCheckout}
           disabled={cart.length === 0}
-          className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700"
+          className="bg-teal-950 hover:bg-teal-900 text-white px-6 py-2 rounded "
         >
           Checkout
         </button>

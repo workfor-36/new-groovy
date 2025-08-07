@@ -2,10 +2,13 @@ import React from 'react';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, FileText, Users } from 'lucide-react';
+import Navbar from '../components/Navbar';
 
 function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-pink-50 to-orange-50 text-gray-900 font-sans">
+         <Navbar/>
+
       {/* Hero Section */}
       <section className="text-center py-24 bg-gradient-to-r from-pink-100 to-orange-100 shadow-inner">
         <div className="container mx-auto px-6">

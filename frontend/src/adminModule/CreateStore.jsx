@@ -37,7 +37,7 @@ const CreateStore = () => {
 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white shadow rounded mt-10">
-      <h2 className="text-2xl font-bold mb-4 text-blue-700">Create New Store</h2>
+      <h2 className="text-2xl font-bold mb-4 text-black-700">Create New Store</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-gray-700 font-medium mb-1">Store ID</label>
@@ -71,7 +71,7 @@ const CreateStore = () => {
         </div>
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-teal-950  px-4 py-2 rounded hover:bg-teal-900 text-white "
           disabled={loading}
         >
           {loading ? "Creating..." : "Create Store"}
