@@ -94,6 +94,9 @@ function Navbar() {
           </li>
         </ul>
       </nav>
+{/* Modals */}
+      <AdminModal isOpen={showAdmin}/>
+      <StoreManagerModal isOpen={showStoreManager} />
 
       {/* Modals */}
       <AdminModal isOpen={showAdmin} closeModal={() => setShowAdmin(false)} />

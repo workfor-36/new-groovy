@@ -1,7 +1,7 @@
 import { ChevronLast, ChevronFirst, LogOut } from "lucide-react";
 import React, { useContext, createContext, useState } from "react";
-import Cookies from "js-cookie"; // Make sure js-cookie is installed
-import { useNavigate } from "react-router-dom"; // assuming you're using React Router
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const SidebarContext = createContext();
 
@@ -11,7 +11,7 @@ export default function Sidebar({ children }) {
 
   const handleLogout = () => {
     Cookies.remove("admin_token");
-    navigate("/"); // redirect to login page after logout
+    navigate("/"); 
   };
 
   return (
