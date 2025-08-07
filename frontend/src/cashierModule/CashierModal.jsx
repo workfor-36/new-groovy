@@ -44,10 +44,10 @@ const handleClose = ()=>{
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 w-full h-screen flex items-center justify-center bg-black bg-opacity-40 z-50">
+    <div className="fixed inset-0 w-full h-screen flex items-center justify-center">
       <div
         ref={modalRef}
-        className="w-[90%] max-w-sm md:max-w-md lg:max-w-md p-5 bg-teal-950 rounded-xl shadow-lg flex flex-col items-center gap-3"
+        className="w-[90%] max-w-sm md:max-w-md lg:max-w-md p-5 bg-teal-950 flex flex-col items-center gap-3 rounded-xl shadow-slate-500 shadow-lg justify-center"
       >
         <h1 className="mt-2 text-lg md:text-xl font-semibold text-white text-center">
           Welcome Back to the Cash Counter!

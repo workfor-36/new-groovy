@@ -49,10 +49,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* Call to Action */}
-      
-
       {/* Footer */}
       <Footer />
     </div>

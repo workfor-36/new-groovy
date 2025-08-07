@@ -51,7 +51,7 @@ const handleClose = ()=>{
     <div className="fixed inset-0 w-full h-screen flex items-center justify-center">
       <div
         ref={modalRef}
-        className="w-[90%] max-w-sm md:max-w-md lg:max-w-md h-2/4 p-5 bg-teal-950 flex-col flex items-center gap-3 rounded-xl shadow-slate-500 shadow-lg justify-center"
+        className="w-[90%] max-w-sm md:max-w-md lg:max-w-md h-2/4 p-5 bg-teal-950  flex flex-col items-center gap-3 rounded-xl shadow-slate-500 shadow-lg justify-center"
       >
         <h1 className="text-lg md:text-xl font-semibold text-white">Welcome Back</h1>
         <h1 className="text-lg md:text-xl font-semibold text-white">Admin</h1>
