@@ -79,7 +79,7 @@ export function SidebarItem({ icon, text, active, alert, onClick }) {
           : "hover:bg-lime-100 hover:text-black text-white"}
       `}
     >
-      {icon}
+<span className="w-6 h-6 flex items-center justify-center">{icon}</span>
       <span
         className={`overflow-hidden transition-all ${
           expanded ? "w-52 ml-3" : "w-0"

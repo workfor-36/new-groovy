@@ -100,12 +100,7 @@ setTimeout(() => {
         )}
 
         {/* Forgot Password */}
-        <p className="text-xs md:text-sm text-gray-400 text-center">
-          Forgot Password?{" "}
-          <a href="/" className="text-white underline">
-            Click here
-          </a>
-        </p>
+        
 
         {/* Buttons */}
         <div className="flex justify-between gap-5 mt-3 w-full text-white">

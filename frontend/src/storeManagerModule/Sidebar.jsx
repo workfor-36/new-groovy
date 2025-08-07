@@ -7,7 +7,12 @@ import React, {
 } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { ChevronLast, ChevronFirst, MoreVertical } from "lucide-react";
+import {
+  ChevronLast,
+  ChevronFirst,
+  MoreVertical,
+  LogOut,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const SidebarContext = createContext();
@@ -60,13 +65,14 @@ export default function Sidebar({ children }) {
   };
 
   return (
-    <aside className="h-screen">
+    <aside className="h-screen flex flex-col">
       <nav
         className={`${
           expanded ? "w-72 p-5" : "w-20 p-4"
-        } bg-teal-950 border-r shadow-sm h-full relative`}
+        } bg-teal-950 border-r shadow-sm h-full flex flex-col justify-between relative`}
       >
-        <div className="p-4 pb-2 flex justify-between items-center">
+        {/* Header */}
+        <div className="pb-2 flex justify-between items-center">
           <span
             className={`overflow-hidden transition-all text-white ${
               expanded ? "w-32" : "w-0"
@@ -82,6 +88,7 @@ export default function Sidebar({ children }) {
           </button>
         </div>
 
+        {/* Sidebar items */}
         <SidebarContext.Provider value={{ expanded }}>
           <ul className="flex-1 px-3">{children}</ul>
         </SidebarContext.Provider>
@@ -91,35 +98,37 @@ export default function Sidebar({ children }) {
           className="border-t flex items-center p-3 text-white relative"
           ref={dropdownRef}
         >
-          <div
-            className={`transition-all ${
-              expanded ? "w-52 ml-3" : "w-0 overflow-hidden"
-            }`}
-          >
-            <div className="leading-4">
-              <h4 className="font-semibold">
-                {loading ? "Loading..." : managerInfo.name || "Unknown"}
-              </h4>
-              <span className="text-xs text-gray-300">
-                {loading ? "" : managerInfo.email || "Not available"}
-              </span>
-            </div>
-          </div>
-          {expanded && (
-            <button onClick={() => setShowDropdown((prev) => !prev)}>
-              <MoreVertical size={20} className="ml-auto text-white" />
-            </button>
-          )}
-
-          {showDropdown && (
-            <div className="absolute bottom-12 right-4 bg-white rounded shadow-lg z-50 w-32">
-              <button
-                onClick={handleLogout}
-                className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
-              >
-                Logout
+          {expanded ? (
+            <>
+              <div className="transition-all w-52 ml-3">
+                <div className="leading-4">
+                  <h4 className="font-semibold">
+                    {loading ? "Loading..." : managerInfo.name || "Unknown"}
+                  </h4>
+                  <span className="text-xs text-gray-300">
+                    {loading ? "" : managerInfo.email || "Not available"}
+                  </span>
+                </div>
+              </div>
+              <button onClick={() => setShowDropdown((prev) => !prev)}>
+                <MoreVertical size={20} className="ml-auto text-white" />
               </button>
-            </div>
+
+              {showDropdown && (
+                <div className="absolute bottom-12 right-4 bg-white rounded shadow-lg z-50 w-32">
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <button onClick={handleLogout}>
+              <LogOut size={20} className="text-white" />
+            </button>
           )}
         </div>
       </nav>
@@ -141,7 +150,7 @@ export function SidebarItem({ icon, text, active, alert, onClick }) {
             : "hover:bg-lime-100 hover:text-black text-white"
         }`}
     >
-      {icon}
+      <span className="w-6 h-6 flex items-center justify-center">{icon}</span>
       <span
         className={`overflow-hidden transition-all ${
           expanded ? "w-52 ml-3" : "w-0"

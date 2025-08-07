@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const AdminModal = ({isOpen}) => {
+const AdminModal = ({ isOpen }) => {
   const modalRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -93,13 +93,7 @@ const AdminModal = ({isOpen}) => {
             )}
           </div>
 
-          <p className="text-xs md:text-sm text-gray-400 text-center">
-            Forgot Password?{" "}
-            <a href="/" className="text-white underline">
-              Click here
-            </a>
-          </p>
-          {error && <p className="text-red-500 text-xs">{error}</p>}
+          
         </div>
 
         <div className="flex justify-between gap-3 mt-4 w-full text-white h-12">

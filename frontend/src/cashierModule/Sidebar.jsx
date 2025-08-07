@@ -1,7 +1,18 @@
-import React, { useContext, createContext, useEffect, useState, useRef } from "react";
+import React, {
+  useContext,
+  createContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { ChevronLast, ChevronFirst, MoreVertical } from "lucide-react";
+import {
+  ChevronLast,
+  ChevronFirst,
+  MoreVertical,
+  LogOut,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const SidebarContext = createContext();
@@ -17,9 +28,12 @@ export default function Sidebar({ children }) {
   useEffect(() => {
     const fetchCashierProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:4001/api/auth/cashier/profile", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          "http://localhost:4001/api/auth/cashier/profile",
+          {
+            withCredentials: true,
+          }
+        );
         setCashierInfo({
           name: res.data.name,
           email: res.data.email,
@@ -34,7 +48,6 @@ export default function Sidebar({ children }) {
     fetchCashierProfile();
   }, []);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -46,26 +59,21 @@ export default function Sidebar({ children }) {
   }, []);
 
   const handleLogout = () => {
-    // Delete cookies
     Cookies.remove("cashier_token");
     Cookies.remove("cashier_storeId");
     Cookies.remove("role");
-
-    // Optional: Call backend logout endpoint if needed
-    // await axios.post('/api/auth/cashier/logout', {}, { withCredentials: true });
-
-    // Redirect to login page
     navigate("/");
   };
 
   return (
-    <>
-      <aside className="h-screen">
-        <nav
-          className={`${
-            expanded ? "w-72 p-5" : "w-20 p-4"
-          } bg-teal-950 border-r shadow-sm h-full relative`}
-        >
+    <aside className="h-screen">
+      <nav
+        className={`${
+          expanded ? "w-72 p-5" : "w-20 p-4"
+        } bg-teal-950 border-r shadow-sm h-full relative flex flex-col justify-between`}
+      >
+        {/* Top section: brand and toggle */}
+        <div>
           <div className="p-4 pb-2 flex justify-between items-center">
             <span
               className={`overflow-hidden transition-all text-white ${
@@ -82,47 +90,56 @@ export default function Sidebar({ children }) {
             </button>
           </div>
 
+          {/* Navigation items */}
           <SidebarContext.Provider value={{ expanded }}>
-            <ul className="flex-1 px-3">{children}</ul>
+            <ul className="px-3">{children}</ul>
           </SidebarContext.Provider>
+        </div>
 
-          {/* login details */}
-          <div className="border-t flex items-center p-3 text-white relative" ref={dropdownRef}>
-            <div
-              className={`transition-all ${
-                expanded ? "w-52 ml-3" : "w-0 overflow-hidden"
-              }`}
-            >
-              <div className="leading-4">
-                <h4 className="font-semibold">
-                  {loading ? "Loading..." : cashierInfo.name || "Unknown"}
-                </h4>
-                <span className="text-xs text-gray-300">
-                  {loading ? "" : cashierInfo.email || "Not available"}
-                </span>
+        {/* Bottom: user info or logout icon */}
+        <div
+          className="border-t flex items-center p-3 text-white relative"
+          ref={dropdownRef}
+        >
+          {expanded ? (
+            <>
+              <div className={`transition-all ${expanded ? "w-52 ml-3" : "w-0 overflow-hidden"}`}>
+                <div className="leading-4">
+                  <h4 className="font-semibold">
+                    {loading ? "Loading..." : cashierInfo.name || "Unknown"}
+                  </h4>
+                  <span className="text-xs text-gray-300">
+                    {loading ? "" : cashierInfo.email || "Not available"}
+                  </span>
+                </div>
               </div>
-            </div>
-            {expanded && (
               <button onClick={() => setShowDropdown((prev) => !prev)}>
                 <MoreVertical size={20} className="ml-auto text-white" />
               </button>
-            )}
 
-            {/* Dropdown */}
-            {showDropdown && (
-              <div className="absolute bottom-12 right-4 bg-white rounded shadow-lg z-50 w-32">
-                <button
-                  onClick={handleLogout}
-                  className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
-        </nav>
-      </aside>
-    </>
+              {showDropdown && (
+                <div className="absolute bottom-12 right-4 bg-white rounded shadow-lg z-50 w-32">
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <button
+              onClick={handleLogout}
+              title="Logout"
+              className="mx-auto p-2 rounded hover:bg-red-600"
+            >
+              <LogOut size={20} />
+            </button>
+          )}
+        </div>
+      </nav>
+    </aside>
   );
 }
 
@@ -140,8 +157,12 @@ export function SidebarItem({ icon, text, active, alert, onClick }) {
             : "hover:bg-lime-100 hover:text-black text-white"
         }`}
     >
-      {icon}
-      <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
+      <span className="w-6 h-6 flex items-center justify-center">{icon}</span>
+      <span
+        className={`overflow-hidden transition-all ${
+          expanded ? "w-52 ml-3" : "w-0"
+        }`}
+      >
         {text}
       </span>
       {alert && (
