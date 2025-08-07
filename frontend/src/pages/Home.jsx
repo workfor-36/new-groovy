@@ -15,11 +15,6 @@ function Home() {
           <p className="text-lg text-gray-600 mb-8">
             GroovyBills helps you manage your bills, POS, and customer info in one clean dashboard.
           </p>
-          <Link to="/">
-          <button className="bg-orange-500 text-white px-6 py-3 rounded-full text-lg hover:bg-orange-600">
-            Get Started 
-          </button>
-          </Link>
         </div>
       </section>
 
@@ -43,20 +38,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* Call to Action */}
-      <section className="py-16 bg-orange-500 text-white text-center">
-        <div className="container mx-auto px-6">
-          <h4 className="text-3xl font-bold mb-4">Ready to simplify your billing?</h4>
-          <p className="mb-6">Join hundreds of businesses using GroovyBills.</p>
-         <Link to="/"> 
-          <button className="bg-white text-orange-500 px-6 py-3 rounded-full font-semibold hover:bg-gray-100">
-            Try It Now
-          </button>
-          </Link>
-        </div>
-      </section>
-
       {/* Footer */}
        <Footer/> 
     </div>
