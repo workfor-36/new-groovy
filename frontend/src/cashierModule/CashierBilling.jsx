@@ -119,7 +119,7 @@ const CashierBilling = () => {
     }, 0);
   };
 
- const generatePDF = (dataRef, dataType = "cart") => {
+   const generatePDF = (dataRef, dataType = "cart") => {
   const doc = new jsPDF();
   const title = dataType === "cart" ? "Invoice" : "Groovy Bills";
 
@@ -199,12 +199,19 @@ const CashierBilling = () => {
 };
 
 
+
   const handleCheckout = async () => {
     if (cart.length === 0) return;
     if (!customerName || !customerPhone) {
-      alert("Please enter customer name and phone number.");
-      return;
-    }
+  alert("Please enter customer name and phone number.");
+  return;
+}
+
+if (!/^\d{10}$/.test(customerPhone)) {
+  alert("Customer phone number must be exactly 10 digits.");
+  return;
+}
+
 
     try {
       const storeId = Cookies.get("cashier_storeId");
@@ -257,7 +264,7 @@ const CashierBilling = () => {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-">
       <h1 className="text-2xl font-bold mb-4">Billing System</h1>
 
       <div className="mb-4 flex flex-col md:flex-row gap-4">
@@ -269,12 +276,19 @@ const CashierBilling = () => {
           className="border p-2 w-full md:w-1/3"
         />
         <input
-          type="tel"
-          placeholder="Customer Phone"
-          value={customerPhone}
-          onChange={(e) => setCustomerPhone(e.target.value)}
-          className="border p-2 w-full md:w-1/3"
-        />
+  type="tel"
+  placeholder="Customer Phone"
+  value={customerPhone}
+  maxLength={10}
+  onChange={(e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setCustomerPhone(value.slice(0, 10)); // ensures max 10 digits
+    }
+  }}
+  className="border p-2 w-full md:w-1/3"
+/>
+
       </div>
 
       <div className="mb-4 flex items-center gap-4">

@@ -156,7 +156,7 @@ const AdminTax = () => {
                   {tax.value}
                   {tax.type === "percentage" ? "%" : " ₹"}
                 </td>
-<td>{tax.category?.categoryName}</td> // ✅
+<td>{tax.category?.categoryName}</td> ✅
                 <td className="py-2 px-4">{tax.isDefault ? "✅" : "❌"}</td>
               </tr>
             ))}

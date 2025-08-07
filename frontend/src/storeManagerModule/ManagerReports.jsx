@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Cookies from "js-cookie"; // ✅ NEW: to read cookies
+import Cookies from "js-cookie";
+import { BarChart2, TrendingUp, Calendar, AlertCircle } from "lucide-react";
 
 const ManagerReports = () => {
   const [report, setReport] = useState(null);
@@ -9,7 +10,7 @@ const ManagerReports = () => {
 
   useEffect(() => {
     const fetchReport = async () => {
-      const storeId = Cookies.get("storeId"); // ✅ Get storeId from cookie
+      const storeId = Cookies.get("storeId");
       if (!storeId) {
         setError("Store ID not found in cookies.");
         setLoading(false);
@@ -17,22 +18,13 @@ const ManagerReports = () => {
       }
 
       try {
-        console.log("Fetching report for storeId:", storeId);
         const res = await axios.get(
           `http://localhost:4001/api/reports/store/${storeId}`,
           { withCredentials: true }
         );
-        console.log("Fetched report successfully:", res.data);
         setReport(res.data);
       } catch (err) {
-        console.error("❌ Failed to fetch report:", err);
-        if (err.response) {
-          console.error("🔴 Server responded with:", err.response.data);
-        } else if (err.request) {
-          console.error("🟠 No response received. Request sent:", err.request);
-        } else {
-          console.error("🟡 Error setting up request:", err.message);
-        }
+        console.error("Failed to fetch report:", err);
         setError("Failed to load report. Please try again.");
       } finally {
         setLoading(false);
@@ -44,71 +36,99 @@ const ManagerReports = () => {
 
   if (loading) {
     return (
-      <div className="p-6">
-        <h2 className="text-xl font-semibold text-gray-600">Loading store report...</h2>
+      <div className="p-6 flex items-center justify-center h-48">
+        <h2 className="text-lg text-gray-500 animate-pulse">Loading store report...</h2>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6">
-        <h2 className="text-xl font-bold text-red-600">{error}</h2>
+      <div className="p-6 flex items-center justify-center h-48">
+        <h2 className="text-lg font-semibold text-red-600 flex items-center gap-2">
+          <AlertCircle className="w-5 h-5" />
+          {error}
+        </h2>
       </div>
     );
   }
 
   if (!report) {
     return (
-      <div className="p-6">
-        <h2 className="text-xl font-bold text-red-600">No report data available.</h2>
+      <div className="p-6 flex items-center justify-center h-48">
+        <h2 className="text-lg font-semibold text-red-600">No report data available.</h2>
       </div>
     );
   }
 
+  const stats = [
+    {
+      label: "Daily Bills",
+      value: report.dailySales,
+      color: "text-blue-600",
+      icon: <TrendingUp className="w-5 h-5 text-blue-400" />,
+    },
+    {
+      label: "Weekly Bills",
+      value: report.weeklySales,
+      color: "text-blue-600",
+      icon: <TrendingUp className="w-5 h-5 text-blue-400" />,
+    },
+    {
+      label: "Monthly Bills",
+      value: report.monthlySales,
+      color: "text-blue-600",
+      icon: <TrendingUp className="w-5 h-5 text-blue-400" />,
+    },
+    {
+      label: "Daily Revenue",
+      value: `₹${report.dailyRevenue.toLocaleString()}`,
+      color: "text-green-600",
+      icon: <BarChart2 className="w-5 h-5 text-green-400" />,
+    },
+    {
+      label: "Weekly Revenue",
+      value: `₹${report.weeklyRevenue.toLocaleString()}`,
+      color: "text-green-600",
+      icon: <BarChart2 className="w-5 h-5 text-green-400" />,
+    },
+    {
+      label: "Monthly Revenue",
+      value: `₹${report.monthlyRevenue.toLocaleString()}`,
+      color: "text-green-600",
+      icon: <BarChart2 className="w-5 h-5 text-green-400" />,
+    },
+    {
+      label: "GST Collected",
+      value: `₹${report.gstCollected.toLocaleString()}`,
+      color: "text-orange-600",
+      icon: <Calendar className="w-5 h-5 text-orange-400" />,
+    },
+    {
+      label: "GST Pending",
+      value: `₹${report.gstPending.toLocaleString()}`,
+      color: "text-red-600",
+      icon: <Calendar className="w-5 h-5 text-red-400" />,
+    },
+  ];
+
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">Store Report</h2>
+      <h2 className="text-3xl font-extrabold mb-6 text-gray-800">📊 Store Performance Report</h2>
 
-      <div className="bg-white p-5 rounded-lg shadow">
-        
-
-        <div className="grid grid-cols-2 gap-3 mt-4 text-sm">
-          <div className="bg-gray-100 p-3 rounded">
-            <p className="text-gray-600">Daily Sales</p>
-            <p className="text-lg font-bold text-blue-600">{report.dailySales.toLocaleString()}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {stats.map((item, index) => (
+          <div
+            key={index}
+            className="bg-white hover:shadow-lg transition-shadow duration-300 rounded-xl p-5 border border-gray-100"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div>{item.icon}</div>
+              <p className="text-sm text-gray-500">{item.label}</p>
+            </div>
+            <p className={`text-xl font-semibold ${item.color}`}>{item.value}</p>
           </div>
-          <div className="bg-gray-100 p-3 rounded">
-            <p className="text-gray-600">Weekly Sales</p>
-            <p className="text-lg font-bold text-blue-600">{report.weeklySales.toLocaleString()}</p>
-          </div>
-          <div className="bg-gray-100 p-3 rounded">
-            <p className="text-gray-600">Monthly Sales</p>
-            <p className="text-lg font-bold text-blue-600">{report.monthlySales.toLocaleString()}</p>
-          </div>
-
-          <div className="bg-gray-100 p-3 rounded">
-            <p className="text-gray-600">Daily Revenue</p>
-            <p className="text-lg font-bold text-green-600">₹{report.dailyRevenue.toLocaleString()}</p>
-          </div>
-          <div className="bg-gray-100 p-3 rounded">
-            <p className="text-gray-600">Weekly Revenue</p>
-            <p className="text-lg font-bold text-green-600">₹{report.weeklyRevenue.toLocaleString()}</p>
-          </div>
-          <div className="bg-gray-100 p-3 rounded">
-            <p className="text-gray-600">Monthly Revenue</p>
-            <p className="text-lg font-bold text-green-600">₹{report.monthlyRevenue.toLocaleString()}</p>
-          </div>
-
-          <div className="bg-gray-100 p-3 rounded">
-            <p className="text-gray-600">GST Collected</p>
-            <p className="text-lg font-bold text-orange-600">₹{report.gstCollected.toLocaleString()}</p>
-          </div>
-          <div className="bg-gray-100 p-3 rounded">
-            <p className="text-gray-600">GST Pending</p>
-            <p className="text-lg font-bold text-red-600">₹{report.gstPending.toLocaleString()}</p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

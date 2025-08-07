@@ -56,10 +56,10 @@ const AdminReports = () => {
               <div className="bg-blue-50 p-3 rounded">
                 <p className="text-sm text-gray-500 flex items-center gap-1">
                   <CalendarDays className="w-4 h-4" />
-                  Daily Sales
+                  Daily Bills
                 </p>
                 <p className="text-lg font-bold text-blue-600">
-                  ₹{store.dailySales?.toLocaleString() || 0}
+                  {store.dailySales?.toLocaleString() || 0}
                 </p>
               </div>
 
@@ -76,9 +76,9 @@ const AdminReports = () => {
 
               {/* Weekly Sales */}
               <div className="bg-blue-50 p-3 rounded">
-                <p className="text-sm text-gray-500">Weekly Sales</p>
+                <p className="text-sm text-gray-500">Weekly Bills</p>
                 <p className="text-lg font-bold text-blue-600">
-                  ₹{store.weeklySales?.toLocaleString() || 0}
+                  {store.weeklySales?.toLocaleString() || 0}
                 </p>
               </div>
 
@@ -92,9 +92,9 @@ const AdminReports = () => {
 
               {/* Monthly Sales */}
               <div className="bg-blue-50 p-3 rounded">
-                <p className="text-sm text-gray-500">Monthly Sales</p>
+                <p className="text-sm text-gray-500">Monthly Bills</p>
                 <p className="text-lg font-bold text-blue-600">
-                  ₹{store.monthlySales?.toLocaleString() || 0}
+                  {store.monthlySales?.toLocaleString() || 0}
                 </p>
               </div>
 
