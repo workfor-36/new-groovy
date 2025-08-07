@@ -1,64 +1,60 @@
 import React from 'react';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
+import { ShoppingCart, FileText, Users } from 'lucide-react';
 
 function Home() {
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800">
-      {/* Navbar */}
-      
-
+    <div className="min-h-screen bg-gradient-to-br from-white via-pink-50 to-orange-50 text-gray-900 font-sans">
       {/* Hero Section */}
-      <section className="text-center py-16 bg-gradient-to-r from-orange-100 to-yellow-100">
+      <section className="text-center py-24 bg-gradient-to-r from-pink-100 to-orange-100 shadow-inner">
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-bold mb-4">Smarter Billing Starts Here</h2>
-          <p className="text-lg text-gray-600 mb-8">
-            GroovyBills helps you manage your bills, POS, and customer info in one clean dashboard.
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight tracking-wide drop-shadow-md">
+            Smarter Billing Starts Here
+          </h1>
+          <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto mb-10">
+            GroovyBills empowers fashion retailers to manage POS, billing & customer data effortlessly — all in one elegant dashboard.
           </p>
-          <Link to="/">
-          <button className="bg-orange-500 text-white px-6 py-3 rounded-full text-lg hover:bg-orange-600">
-            Get Started 
-          </button>
-          </Link>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16">
+      <section id="features" className="py-20">
         <div className="container mx-auto px-6">
-          <h3 className="text-3xl font-semibold text-center mb-12">Features</h3>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-14 text-gray-800">
+            Designed for Fashion Retail
+          </h2>
           <div className="grid md:grid-cols-3 gap-10">
-            <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <h4 className="text-xl font-semibold mb-2">POS System</h4>
-              <p className="text-gray-600">Fast and reliable point of sale system to manage transactions.</p>
+            <div className="bg-white hover:shadow-xl transition-shadow p-8 rounded-2xl shadow-md text-center border border-gray-100">
+              <div className="flex justify-center mb-4 text-orange-500">
+                <ShoppingCart size={40} />
+              </div>
+              <h4 className="text-xl font-semibold mb-3">POS System</h4>
+              <p className="text-gray-600 text-sm">Quick & stylish point-of-sale system optimized for boutiques and outlets.</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <h4 className="text-xl font-semibold mb-2">Billing Reports</h4>
-              <p className="text-gray-600">Generate bills, view reports, and keep your finances transparent.</p>
+            <div className="bg-white hover:shadow-xl transition-shadow p-8 rounded-2xl shadow-md text-center border border-gray-100">
+              <div className="flex justify-center mb-4 text-pink-500">
+                <FileText size={40} />
+              </div>
+              <h4 className="text-xl font-semibold mb-3">Billing Reports</h4>
+              <p className="text-gray-600 text-sm">Generate elegant invoices, track finances, and view daily to monthly sales reports.</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <h4 className="text-xl font-semibold mb-2">Customer Management</h4>
-              <p className="text-gray-600">Track customer purchases and history with ease.</p>
+            <div className="bg-white hover:shadow-xl transition-shadow p-8 rounded-2xl shadow-md text-center border border-gray-100">
+              <div className="flex justify-center mb-4 text-purple-500">
+                <Users size={40} />
+              </div>
+              <h4 className="text-xl font-semibold mb-3">Customer Management</h4>
+              <p className="text-gray-600 text-sm">Build loyalty by tracking purchases, preferences, and contact history.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-orange-500 text-white text-center">
-        <div className="container mx-auto px-6">
-          <h4 className="text-3xl font-bold mb-4">Ready to simplify your billing?</h4>
-          <p className="mb-6">Join hundreds of businesses using GroovyBills.</p>
-         <Link to="/"> 
-          <button className="bg-white text-orange-500 px-6 py-3 rounded-full font-semibold hover:bg-gray-100">
-            Try It Now
-          </button>
-          </Link>
-        </div>
-      </section>
+      
 
       {/* Footer */}
-       <Footer/> 
+      <Footer />
     </div>
   );
 }
