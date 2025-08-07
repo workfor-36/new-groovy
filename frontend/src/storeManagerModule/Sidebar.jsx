@@ -82,7 +82,7 @@ export default function Sidebar({ children }) {
           </span>
           <button
             onClick={() => setExpanded((curr) => !curr)}
-            className="p-1.5 rounded-lg bg-teal-900 hover:bg-cyan-100 hover:text-black text-white"
+            className="p-1.5 rounded-lg bg-teal-900 hover:bg-cyan-100 hover:text-black text-white cursor-pointer"
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}
           </button>
@@ -111,14 +111,14 @@ export default function Sidebar({ children }) {
                 </div>
               </div>
               <button onClick={() => setShowDropdown((prev) => !prev)}>
-                <MoreVertical size={20} className="ml-auto text-white" />
+                <MoreVertical size={20} className="ml-auto text-white cursor-pointer" />
               </button>
 
               {showDropdown && (
                 <div className="absolute bottom-12 right-4 bg-white rounded shadow-lg z-50 w-32">
                   <button
                     onClick={handleLogout}
-                    className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
+                    className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100 cursor-pointer"
                   >
                     Logout
                   </button>
@@ -126,8 +126,10 @@ export default function Sidebar({ children }) {
               )}
             </>
           ) : (
-            <button onClick={handleLogout}>
-              <LogOut size={20} className="text-white" />
+            <button 
+            onClick={handleLogout}
+            className="mx-auto p-2 rounded hover:text-red-600 cursor-pointer">
+              <LogOut size={20} />
             </button>
           )}
         </div>

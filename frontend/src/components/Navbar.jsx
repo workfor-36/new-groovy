@@ -47,7 +47,7 @@ function Navbar() {
           <li className="relative" ref={dropdownRef}>
             <button 
               onClick={toggleDropdown} 
-              className="py-2 px-4 bg-orange-500 rounded hover:bg-orange-600 transition"
+              className="py-2 px-4 bg-orange-500 rounded hover:bg-orange-600 transition cursor-pointer"
             >
               Login
             </button>
@@ -57,7 +57,7 @@ function Navbar() {
                 <ul>
                   <li>
                     <button
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
                       onClick={() => {
                         setShowAdmin(true);
                         setDropdownOpen(false);
@@ -68,7 +68,7 @@ function Navbar() {
                   </li>
                   <li>
                     <button
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
                       onClick={() => {
                         setShowStoreManager(true);
                         setDropdownOpen(false);
@@ -79,7 +79,7 @@ function Navbar() {
                   </li>
                   <li>
                     <button
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
                       onClick={() => {
                         setShowCashier(true);
                         setDropdownOpen(false);

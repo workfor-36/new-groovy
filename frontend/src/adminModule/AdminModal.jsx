@@ -98,14 +98,14 @@ const AdminModal = ({ isOpen }) => {
 
         <div className="flex justify-between gap-3 mt-4 w-full text-white h-12">
           <button
-            className="flex-1 p-2 bg-cyan-900 rounded-xl hover:bg-cyan-950 text-sm md:text-base"
+            className="flex-1 p-2 bg-cyan-900 rounded-xl hover:bg-cyan-950 text-sm md:text-base cursor-pointer"
             onClick={handleLogin}
             disabled={loading}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
           <button
-            className="flex-1 p-2 bg-cyan-900 rounded-xl hover:bg-cyan-950 text-sm md:text-base"
+            className="flex-1 p-2 bg-cyan-900 rounded-xl hover:bg-cyan-950 text-sm md:text-base cursor-pointer"
             onClick={handleClose}
           >
             Close

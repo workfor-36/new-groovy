@@ -34,7 +34,7 @@ const StoreManagerModal = ({ isOpen, closeModal }) => {
     setTimeout(() => {
       closeModal();
       navigate("/manager");
-    }, 3000); // match ToastContainer autoClose
+    }, 1000); // match ToastContainer autoClose
   } catch (err) {
     console.error(err);
     toast.error(err.response?.data?.message || "Login failed");
@@ -99,14 +99,6 @@ const StoreManagerModal = ({ isOpen, closeModal }) => {
 
         {/* Error Message */}
         {error && <p className="text-red-400 text-sm text-center">{error}</p>}
-
-        {/* Forgot Password */}
-        <p className="text-xs md:text-sm text-gray-400 text-center">
-          Forgot Password?{" "}
-          <a href="/" className="text-white underline">
-            Click here
-          </a>
-        </p>
 
         {/* Action Buttons */}
         <div className="flex justify-between gap-3 w-full text-white mt-3">

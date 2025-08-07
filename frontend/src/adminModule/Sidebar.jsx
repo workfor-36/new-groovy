@@ -33,7 +33,7 @@ export default function Sidebar({ children }) {
             </span>
             <button
               onClick={() => setExpanded((curr) => !curr)}
-              className="p-1.5 rounded-lg bg-teal-900 hover:bg-cyan-100 hover:text-black text-white"
+              className="p-1.5 rounded-lg bg-teal-900 hover:bg-cyan-100 hover:text-black text-white cursor-pointer"
             >
               {expanded ? <ChevronFirst /> : <ChevronLast />}
             </button>
@@ -48,7 +48,7 @@ export default function Sidebar({ children }) {
         <div className="border-t mt-4 pt-4 px-3">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 text-white hover:text-red-500 transition-colors"
+            className="flex items-center gap-2 text-white hover:text-red-500 transition-colors cursor-pointer"
           >
             <LogOut className="w-5 h-5" />
             {expanded && (

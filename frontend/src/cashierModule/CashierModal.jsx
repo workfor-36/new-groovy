@@ -32,7 +32,7 @@ const CashierModal = ({ isOpen }) => {
 
 setTimeout(() => {
   navigate("/cashier");
-}, 3000); // Wait for toast to complete (matches autoClose)
+}, 1000); // Wait for toast to complete (matches autoClose)
 
     } catch (err) {
       console.error(err);
@@ -99,19 +99,16 @@ setTimeout(() => {
           <p className="text-red-400 text-sm mt-2 text-center">{error}</p>
         )}
 
-        {/* Forgot Password */}
-        
-
         {/* Buttons */}
         <div className="flex justify-between gap-5 mt-3 w-full text-white">
           <button
             onClick={handleLogin}
-            className="flex-1 p-2 bg-cyan-900 rounded-xl hover:bg-cyan-950 text-sm md:text-base"
+            className="flex-1 p-2 bg-cyan-900 rounded-xl hover:bg-cyan-950 text-sm md:text-base cursor-pointer"
           >
             Login
           </button>
           <button
-            className="flex-1 p-2 bg-cyan-900 rounded-xl hover:bg-cyan-950 text-sm md:text-base"
+            className="flex-1 p-2 bg-cyan-900 rounded-xl hover:bg-cyan-950 text-sm md:text-base cursor-pointer"
             onClick={handleClose}
           >
             Close
