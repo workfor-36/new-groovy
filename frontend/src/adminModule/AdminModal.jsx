@@ -4,7 +4,6 @@ import React, { useState, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const AdminModal = ({ isOpen }) => {
 const AdminModal = ({isOpen}) => {
   const modalRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
