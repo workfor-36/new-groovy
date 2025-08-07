@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const AdminTax = () => {
   const [taxes, setTaxes] = useState([]);
@@ -14,22 +15,24 @@ const AdminTax = () => {
   });
 
   useEffect(() => {
-    // Fetch categories
-    axios.get("http://localhost:4001/api/attributes/category")
+    axios
+      .get("http://localhost:4001/api/attributes/category")
       .then((res) => {
         setCategories(res.data || []);
       })
       .catch((err) => {
         console.error("Failed to load categories", err);
+        toast.error("⚠️ Failed to load categories");
       });
 
-    // Fetch taxes
-    axios.get("http://localhost:4001/api/tax/")
+    axios
+      .get("http://localhost:4001/api/tax/")
       .then((res) => {
         setTaxes(res.data || []);
       })
       .catch((err) => {
         console.error("Failed to load taxes", err);
+        toast.error("⚠️ Failed to load taxes");
       });
   }, []);
 
@@ -49,6 +52,9 @@ const AdminTax = () => {
       });
 
       setTaxes([...taxes, response.data]);
+
+      toast.success(" Tax added successfully!");
+
       setFormData({
         name: "",
         type: "percentage",
@@ -58,7 +64,7 @@ const AdminTax = () => {
       });
     } catch (error) {
       console.error("Failed to add tax", error);
-      alert("Error adding tax");
+      toast.error("Error adding tax");
     }
   };
 
@@ -66,7 +72,6 @@ const AdminTax = () => {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Admin - Tax Configuration</h2>
 
-      {/* Form */}
       <form
         onSubmit={handleSubmit}
         className="bg-white p-4 rounded shadow-md mb-8 grid grid-cols-1 md:grid-cols-5 gap-4"
@@ -111,9 +116,8 @@ const AdminTax = () => {
           <option value="">Select Category</option>
           {categories.map((cat) => (
             <option key={cat._id} value={cat._id}>
-  {cat.categoryName}
-</option>
-
+              {cat.categoryName}
+            </option>
           ))}
         </select>
 
@@ -156,7 +160,7 @@ const AdminTax = () => {
                   {tax.value}
                   {tax.type === "percentage" ? "%" : " ₹"}
                 </td>
-<td>{tax.category?.categoryName}</td> ✅
+                <td className="py-2 px-4">{tax.category?.categoryName}</td>
                 <td className="py-2 px-4">{tax.isDefault ? "✅" : "❌"}</td>
               </tr>
             ))}

@@ -1,9 +1,10 @@
 import { MdAlternateEmail } from "react-icons/md";
 import { FaFingerprint, FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import React,{ useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 const StoreManagerModal = ({ isOpen, closeModal }) => {
   const modalRef = useRef(null);
@@ -16,45 +17,51 @@ const StoreManagerModal = ({ isOpen, closeModal }) => {
 
   const togglePasswordView = () => setShowPassword(!showPassword);
 
-  const handleLogin = async () => {
+ const handleLogin = async () => {
   try {
     const { data } = await axios.post("http://localhost:4001/api/auth/manager/login", {
       email,
       password,
     });
 
-    // Save token, storeId, and role
     Cookies.set("manager_token", data.token, { expires: 1 });
     Cookies.set("storeId", data.storeId, { expires: 1 });
     Cookies.set("role", data.role || "manager", { expires: 1 });
 
-    alert("Login successful!");
-    closeModal();
-    navigate("/manager");
+    toast.success("Login successful!");
+
+    // Wait for toast to finish (e.g. 3 seconds)
+    setTimeout(() => {
+      closeModal();
+      navigate("/manager");
+    }, 3000); // match ToastContainer autoClose
   } catch (err) {
     console.error(err);
-    setError(err.response?.data?.message || "Login failed");
+    toast.error(err.response?.data?.message || "Login failed");
   }
 };
 
-const handleClose = ()=>{
-  window.location.href="/"
-}; 
+
+  const handleClose = () => {
+    window.location.href = "/";
+  };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 w-full h-screen flex items-center justify-center">
+    // ✅ Backdrop with z-index
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
       <div
         ref={modalRef}
-        className="w-[90%] max-w-sm md:max-w-md h-fit p-5 bg-teal-950 flex-col flex items-center gap-3 rounded-xl shadow-slate-500 shadow-lg justify-center"
+        className="w-[90%] max-w-sm md:max-w-md p-5 bg-teal-950 flex-col flex items-center gap-3 rounded-xl shadow-slate-500 shadow-lg justify-center"
       >
-        <h1 className="text-lg md:text-xl font-semibold text-white mt-3">
+        <h1 className="text-lg md:text-xl font-semibold text-white mt-3 text-center">
           Welcome to the
         </h1>
-        <span className="w-12 md:w-14 text-white">Store</span>
+        <span className="text-white text-xl font-bold">Store</span>
 
         <div className="w-80 flex flex-col gap-3">
+          {/* Email Field */}
           <div className="w-full h-10 flex items-center gap-2 bg-teal-800 p-2 rounded-xl">
             <MdAlternateEmail />
             <input
@@ -66,6 +73,7 @@ const handleClose = ()=>{
             />
           </div>
 
+          {/* Password Field */}
           <div className="w-full h-10 flex items-center gap-2 bg-teal-800 p-2 rounded-xl relative">
             <FaFingerprint />
             <input
@@ -89,16 +97,19 @@ const handleClose = ()=>{
           </div>
         </div>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {/* Error Message */}
+        {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
-        <p className="text-xs md:text-sm text-gray-500 text-center">
+        {/* Forgot Password */}
+        <p className="text-xs md:text-sm text-gray-400 text-center">
           Forgot Password?{" "}
-          <a href="/">
-            <button className="text-white cursor-pointer pl-1">Click here</button>
+          <a href="/" className="text-white underline">
+            Click here
           </a>
         </p>
 
-        <div className="flex justify-between gap-3 w-full text-white h-12 mb-4">
+        {/* Action Buttons */}
+        <div className="flex justify-between gap-3 w-full text-white mt-3">
           <button
             className="flex-1 p-2 rounded-xl bg-cyan-900 hover:bg-cyan-950 text-sm md:text-base cursor-pointer"
             onClick={handleLogin}

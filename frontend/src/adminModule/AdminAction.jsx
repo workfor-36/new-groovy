@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 const AdminAction = () => {
   const [stores, setStores] = useState([]);
@@ -18,6 +19,7 @@ const AdminAction = () => {
       setStores(data);
     } catch (error) {
       console.error("Error fetching stores:", error);
+      toast.error("Failed to fetch stores.");
     }
   };
 
@@ -28,7 +30,7 @@ const AdminAction = () => {
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);
-      alert("Failed to fetch users.");
+      toast.error("Failed to fetch users.");
     }
   };
 
@@ -49,18 +51,18 @@ const AdminAction = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.message || "Failed to create user");
+        toast.error(data.message || "Failed to create user");
         return;
       }
 
       setFormData({ name: "", email: "", role: "Cashier" });
       setEditId(null);
-      alert(data.message || "User created successfully");
+      toast.success(data.message || "User created successfully");
 
-      fetchUsers(); // Refresh users
+      fetchUsers();
     } catch (error) {
       console.error("Error creating user:", error);
-      alert("Something went wrong while creating the user.");
+      toast.error("Something went wrong while creating the user.");
     }
   };
 
@@ -70,82 +72,78 @@ const AdminAction = () => {
   };
 
   const handleDelete = async (id) => {
-  const user = users.find(u => u._id === id || u.id === id);
-  if (!user) {
-    alert("User not found.");
-    return;
-  }
+    const user = users.find(u => u._id === id || u.id === id);
+    if (!user) {
+      toast.error("User not found.");
+      return;
+    }
 
-  const role = user.role.toLowerCase(); // "cashier" or "manager"
+    const role = user.role.toLowerCase();
 
-  if (window.confirm(`Are you sure you want to delete this ${user.role}?`)) {
+    if (window.confirm(`Are you sure you want to delete this ${user.role}?`)) {
+      try {
+        const res = await fetch(`http://localhost:4001/api/stores/delete/${role}/${id}`, {
+          method: "DELETE",
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          toast.error(data.message || "Failed to delete user");
+          return;
+        }
+
+        toast.success(data.message || `${user.role} deleted successfully`);
+        fetchUsers();
+        fetchStores();
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        toast.error("An error occurred while deleting the user.");
+      }
+    }
+  };
+
+  const handleAssignStore = async (userId, storeName) => {
     try {
-      const res = await fetch(`http://localhost:4001/api/stores/delete/${role}/${id}`, {
-        method: "DELETE",
+      const selectedUser = users.find(u => u._id === userId || u.id === userId);
+      const selectedStore = stores.find(s => s.storeName === storeName);
+
+      if (!selectedUser || !selectedStore) {
+        toast.error("Invalid user or store selected");
+        return;
+      }
+
+      const payload = {
+        storeId: selectedStore._id,
+        [`${selectedUser.role.toLowerCase()}Id`]: userId,
+      };
+
+      const endpoint =
+        selectedUser.role === "Manager"
+          ? "http://localhost:4001/api/stores/assign-manager"
+          : "http://localhost:4001/api/stores/assign-cashier";
+
+      const res = await fetch(endpoint, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message || "Failed to delete user");
+        toast.error(data.message || "Failed to assign store");
         return;
       }
 
-      alert(data.message || `${user.role} deleted successfully`);
-      fetchUsers(); // Refresh users list
-      fetchStores(); // Refresh stores to clear manager/cashier refs
+      toast.success(data.message || "Store assigned successfully");
+      fetchUsers();
+      fetchStores();
     } catch (error) {
-      console.error("Error deleting user:", error);
-      alert("An error occurred while deleting the user.");
+      console.error("Error assigning store:", error);
+      toast.error("An error occurred while assigning the store.");
     }
-  }
-};
-
-
-
-const handleAssignStore = async (userId, storeName) => {
-  try {
-    const selectedUser = users.find(u => u._id === userId || u.id === userId);
-    const selectedStore = stores.find(s => s.storeName === storeName);
-
-    if (!selectedUser || !selectedStore) {
-      alert("Invalid user or store selected");
-      return;
-    }
-
-    const payload = {
-      storeId: selectedStore._id,
-      [`${selectedUser.role.toLowerCase()}Id`]: userId,
-    };
-
-    const endpoint =
-      selectedUser.role === "Manager"
-        ? "http://localhost:4001/api/stores/assign-manager"
-        : "http://localhost:4001/api/stores/assign-cashier";
-
-    const res = await fetch(endpoint, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.message || "Failed to assign store");
-      return;
-    }
-
-    alert(data.message || "Store assigned successfully");
-
-    // Refresh data
-    fetchUsers();
-    fetchStores();
-  } catch (error) {
-    console.error("Error assigning store:", error);
-    alert("An error occurred while assigning the store.");
-  }
-};
+  };
 
   return (
     <div className="p-6">

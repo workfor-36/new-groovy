@@ -11,11 +11,29 @@ import CashierHome from './cashierModule/CashierHome'
 import ProtectedRoute from './pages/ProtectedRoute'
 import AdminProtectedRoute from './pages/AdminProtectedRoute'
 import AdminModal from './adminModule/AdminModal'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
+
+
 
 function App() {
   return (
-    <div>
-      
+  
+      <div>
+      {/* ✅ Global Toast container */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="colored"
+      />
       <Routes>
       <Route path="/" element={<Home/>}/>
             <Route path="/about" element={<About/>}/>

@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+
+
+
+
 
 const ManagerProductManager = () => {
   const [products, setProducts] = useState([]);
@@ -39,7 +44,7 @@ const ManagerProductManager = () => {
     const { productName, category, size, color, price, stock } = formData;
 
     if (!productName || !category || !size || !color || !price || !stock || !storeId) {
-      alert("All fields are required");
+toast.error("All fields are required");
       return;
     }
 
@@ -65,10 +70,10 @@ const ManagerProductManager = () => {
         stock: "",
       });
 
-      alert("Product added successfully.");
+      toast.success("Product added successfully.");
     } catch (error) {
       console.error("Failed to add product:", error.response?.data || error.message);
-      alert("Error adding product.");
+      toast.error("Error adding product.");
     }
   };
 

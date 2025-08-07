@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import jsPDF  from "jspdf";
 import autoTable from 'jspdf-autotable';
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+
+
+
 
 const CashierBilling = () => {
   const [inventory, setInventory] = useState([]);
@@ -203,12 +207,12 @@ const CashierBilling = () => {
   const handleCheckout = async () => {
     if (cart.length === 0) return;
     if (!customerName || !customerPhone) {
-  alert("Please enter customer name and phone number.");
+toast.error("Please enter customer name and phone number.");
   return;
 }
 
 if (!/^\d{10}$/.test(customerPhone)) {
-  alert("Customer phone number must be exactly 10 digits.");
+toast.error("Customer phone number must be exactly 10 digits.");
   return;
 }
 
@@ -218,7 +222,7 @@ if (!/^\d{10}$/.test(customerPhone)) {
       const role = Cookies.get("role");
 
       if (!storeId || role !== "Cashier") {
-        alert("Invalid session or role. Please log in.");
+toast.error("Invalid session or role. Please log in.");
         return;
       }
 
@@ -243,12 +247,12 @@ if (!/^\d{10}$/.test(customerPhone)) {
 
       if (!response.ok) {
         const error = await response.json();
-        alert("Checkout failed: " + error.message);
+toast.error(`Checkout failed: ${error.message}`);
         return;
       }
 
       await response.json();
-      alert("Bill created successfully!");
+toast.success("Bill created successfully!");
 
       setTimeout(() => {
         generatePDF(cartInvoiceRef);
@@ -259,7 +263,7 @@ if (!/^\d{10}$/.test(customerPhone)) {
       setCustomerPhone("");
     } catch (error) {
       console.error("Checkout error:", error.message);
-      alert("Checkout error: " + error.message);
+toast.error("Checkout error: " + error.message);
     }
   };
 

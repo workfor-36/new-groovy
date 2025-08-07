@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const CreateStore = () => {
   const [storeId, setStoreId] = useState("");
   const [storeName, setStoreName] = useState("");
   const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
 
     try {
       const res = await axios.post("http://localhost:4001/api/stores/create", {
@@ -21,15 +20,15 @@ const CreateStore = () => {
       });
 
       if (res.status === 201) {
-        setMessage("✅ Store created successfully!");
+        toast.success("✅ Store created successfully!");
         setStoreId("");
         setStoreName("");
         setLocation("");
       } else {
-        setMessage("❌ Something went wrong!");
+        toast.error("❌ Something went wrong!");
       }
     } catch (err) {
-      setMessage("❌ Error: " + (err.response?.data?.message || err.message));
+      toast.error("❌ Error: " + (err.response?.data?.message || err.message));
     } finally {
       setLoading(false);
     }
@@ -71,18 +70,12 @@ const CreateStore = () => {
         </div>
         <button
           type="submit"
-          className="bg-teal-950  px-4 py-2 rounded hover:bg-teal-900 text-white "
+          className="bg-teal-950 px-4 py-2 rounded hover:bg-teal-900 text-white"
           disabled={loading}
         >
           {loading ? "Creating..." : "Create Store"}
         </button>
       </form>
-
-      {message && (
-        <div className="mt-4 text-sm font-medium text-center">
-          {message}
-        </div>
-      )}
     </div>
   );
 };
