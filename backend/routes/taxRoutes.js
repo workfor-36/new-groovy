@@ -1,5 +1,5 @@
 import express from "express";
-import { addTax, getAllTaxes, getTaxByCategory } from "../controllers/taxController.js";
+import { addTax, getAllTaxes, getTaxByCategory,deleteTax } from "../controllers/taxController.js";
 
 const router = express.Router();
 
@@ -11,5 +11,6 @@ router.get("/", getAllTaxes);
 
 // GET: Get tax by category ID
 router.get("/category/:categoryId", getTaxByCategory);
+router.delete("/taxes/:id", deleteTax);
 
 export default router;

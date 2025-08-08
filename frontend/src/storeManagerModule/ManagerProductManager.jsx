@@ -174,7 +174,7 @@ toast.error("All fields are required");
       </form>
 
       {/* Product Table */}
-      <div className="overflow-x-auto bg-white rounded-xl shadow">
+      {/* <div className="overflow-x-auto bg-white rounded-xl shadow">
         <table className="min-w-full text-sm text-gray-800">
           <thead className="bg-gray-100 text-left">
             <tr>
@@ -206,7 +206,7 @@ toast.error("All fields are required");
             )}
           </tbody>
         </table>
-      </div>
+      </div> */}
     </div>
   );
 };

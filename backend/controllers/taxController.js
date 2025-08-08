@@ -52,3 +52,29 @@ export const getTaxByCategory = async (req, res) => {
     res.status(500).json({ message: "Error fetching tax for category" });
   }
 };
+
+
+
+// DELETE /api/taxes/:id
+// DELETE /api/taxes/:id
+export const deleteTax = async (req, res) => {
+  try {
+    const { id } = req.params;
+console.log("Trying to delete Tax with id:", id);
+
+    const tax = await Tax.findById(id);
+   if (!tax) {
+  console.log("No tax found in DB for id:", id);
+  return res.status(404).json({ message: "Tax not found" });
+}
+
+    await tax.deleteOne();
+
+    console.log(`Tax with ID ${id} deleted successfully.`);
+
+    res.status(200).json({ message: "Tax deleted successfully" });
+  } catch (err) {
+    console.error("Tax deletion failed:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

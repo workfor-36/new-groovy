@@ -14,27 +14,24 @@ const AdminTax = () => {
     category: "",
   });
 
+  // fetch categories and taxes
   useEffect(() => {
-    axios
-      .get("http://localhost:4001/api/attributes/category")
-      .then((res) => {
-        setCategories(res.data || []);
-      })
-      .catch((err) => {
-        console.error("Failed to load categories", err);
-        toast.error("⚠️ Failed to load categories");
-      });
-
-    axios
-      .get("http://localhost:4001/api/tax/")
-      .then((res) => {
-        setTaxes(res.data || []);
-      })
-      .catch((err) => {
-        console.error("Failed to load taxes", err);
-        toast.error("⚠️ Failed to load taxes");
-      });
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const [catRes, taxRes] = await Promise.all([
+        axios.get("http://localhost:4001/api/attributes/category"),
+        axios.get("http://localhost:4001/api/tax/"),
+      ]);
+      setCategories(catRes.data || []);
+      setTaxes(taxRes.data || []);
+    } catch (err) {
+      console.error("Failed to load data", err);
+      toast.error("⚠️ Failed to load data");
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -52,8 +49,7 @@ const AdminTax = () => {
       });
 
       setTaxes([...taxes, response.data]);
-
-      toast.success(" Tax added successfully!");
+      toast.success("Tax added successfully!");
 
       setFormData({
         name: "",
@@ -65,6 +61,18 @@ const AdminTax = () => {
     } catch (error) {
       console.error("Failed to add tax", error);
       toast.error("Error adding tax");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this tax?")) return;
+    try {
+      await axios.delete(`http://localhost:4001/api/tax/taxes/${id}`);
+      setTaxes(taxes.filter((tax) => tax._id !== id));
+      toast.success("Tax deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete tax", error);
+      toast.error("Error deleting tax");
     }
   };
 
@@ -121,7 +129,7 @@ const AdminTax = () => {
           ))}
         </select>
 
-        <label className="flex items-center gap-2">
+        {/* <label className="flex items-center gap-2">
           <input
             type="checkbox"
             name="isDefault"
@@ -129,7 +137,7 @@ const AdminTax = () => {
             onChange={handleChange}
           />
           Default
-        </label>
+        </label> */}
 
         <button
           type="submit"
@@ -148,7 +156,8 @@ const AdminTax = () => {
               <th className="py-2 px-4 text-left">Type</th>
               <th className="py-2 px-4 text-left">Value</th>
               <th className="py-2 px-4 text-left">Category</th>
-              <th className="py-2 px-4 text-left">Default</th>
+              {/* <th className="py-2 px-4 text-left">Default</th> */}
+              <th className="py-2 px-4 text-left">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -161,12 +170,20 @@ const AdminTax = () => {
                   {tax.type === "percentage" ? "%" : " ₹"}
                 </td>
                 <td className="py-2 px-4">{tax.category?.categoryName}</td>
-                <td className="py-2 px-4">{tax.isDefault ? "✅" : "❌"}</td>
+                {/* <td className="py-2 px-4">{tax.isDefault ? "✅" : "❌"}</td> */}
+                <td className="py-2 px-4">
+                  <button
+                    onClick={() => handleDelete(tax._id)}
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
             {taxes.length === 0 && (
               <tr>
-                <td colSpan="5" className="text-center py-4 text-gray-500">
+                <td colSpan="6" className="text-center py-4 text-gray-500">
                   No tax rules added.
                 </td>
               </tr>
