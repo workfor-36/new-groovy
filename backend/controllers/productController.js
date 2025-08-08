@@ -3,11 +3,6 @@ import Inventory from "../models/inventoryModel.js";
 import mongoose from "mongoose";
 
 
-
-
-
-
-
 // @desc Get all products
 export const getProducts = async (req, res) => {
   try {
@@ -21,13 +16,6 @@ export const getProducts = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch products" });
   }
 };
-
-
-
-
-
-
-
 
 
 export const addProduct = async (req, res) => {
