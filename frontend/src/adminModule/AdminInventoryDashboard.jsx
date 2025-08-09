@@ -8,7 +8,7 @@ const AdminInventoryDashboard = () => {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const res = await axios.get("http://localhost:4001/api/inventory/");
+        const res = await axios.get("https://groovybills.onrender.com/api/inventory/");
         const grouped = groupByStore(res.data);
         setInventoryData(grouped);
       } catch (error) {

@@ -29,7 +29,7 @@ export default function Sidebar({ children }) {
     const fetchCashierProfile = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:4001/api/auth/cashier/profile",
+          "https://groovybills.onrender.com/api/auth/cashier/profile",
           {
             withCredentials: true,
           }

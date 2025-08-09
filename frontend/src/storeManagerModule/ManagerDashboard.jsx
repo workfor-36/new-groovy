@@ -24,13 +24,13 @@ const ManagerDashboard = () => {
 
       try {
         const reportRes = await axios.get(
-          `http://localhost:4001/api/reports/store/${storeId}`,
+          `https://groovybills.onrender.com/api/reports/store/${storeId}`,
           { withCredentials: true }
         );
         setReport(reportRes.data);
 
         const profileRes = await axios.get(
-          "http://localhost:4001/api/auth/manager/profile",
+          "https://groovybills.onrender.com/api/auth/manager/profile",
           { withCredentials: true }
         );
         setManagerName(profileRes.data.name || "Manager");

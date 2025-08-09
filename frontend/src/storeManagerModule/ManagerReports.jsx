@@ -19,7 +19,7 @@ const ManagerReports = () => {
 
       try {
         const res = await axios.get(
-          `http://localhost:4001/api/reports/store/${storeId}`,
+          `https://groovybills.onrender.com/api/reports/store/${storeId}`,
           { withCredentials: true }
         );
         setReport(res.data);

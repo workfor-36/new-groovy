@@ -19,7 +19,7 @@ const StoreManagerModal = ({ isOpen, closeModal }) => {
 
  const handleLogin = async () => {
   try {
-    const { data } = await axios.post("http://localhost:4001/api/auth/manager/login", {
+    const { data } = await axios.post("https://groovybills.onrender.com/api/auth/manager/login", {
       email,
       password,
     });
