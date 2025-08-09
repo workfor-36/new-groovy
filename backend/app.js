@@ -20,7 +20,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173", // dev
-  "https://your-frontend-name.onrender.com"
+  "https://new-groovy.onrender.com"
 ];
 app.use(cors({
   origin: allowedOrigins,
