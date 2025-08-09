@@ -26,9 +26,6 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
-app.use((req, res) => {
-  res.status(404).json({ message: "Route not found" });
-});
 
 app.use("/api/bills", billRoutes);
 app.use("/api/products", productRoutes);
@@ -41,6 +38,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin",adminRoutes);
 app.use("/api/tax",taxRoutes);
 
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
 
 
 export default app;
