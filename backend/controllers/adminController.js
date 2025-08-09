@@ -24,9 +24,9 @@ export const adminLogin = async (req, res) => {
 
     // ✅ Set the cookie
     res.cookie("admin_token", admin_token, {
-      httpOnly: false,
-      secure: false,        // set to true in production with HTTPS
-      sameSite: "lax",      // or 'none' if you're testing across domains with HTTPS
+      httpOnly: true,
+      secure: true,        // set to true in production with HTTPS
+      sameSite: "none",      // or 'none' if you're testing across domains with HTTPS
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 

@@ -29,7 +29,7 @@ console.log("JWT_SECRET used in login route:", process.env.JWT_SECRET);
   .cookie("manager_token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   })
   .json({
@@ -77,7 +77,7 @@ console.log("JWT_SECRET used in login route:", process.env.JWT_SECRET);
   .cookie("cashier_token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   })
   .json({
