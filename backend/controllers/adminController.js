@@ -24,11 +24,12 @@ export const adminLogin = async (req, res) => {
 
     // ✅ Set the cookie
     res.cookie("admin_token", admin_token, {
-      httpOnly: true,
-      secure: true,        // set to true in production with HTTPS
-      sameSite: "none",      // or 'none' if you're testing across domains with HTTPS
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production", // true only in prod
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000
+});
+
 
     res.status(200).json({
       message: "Login successful",
