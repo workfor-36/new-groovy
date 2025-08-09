@@ -19,12 +19,16 @@ connectDB();
 const app = express();
 
 app.use(cors({
-  origin: "https://groovyfrontend.onrender.com",  // your React dev server
+  origin:"https://groovyfrontend.onrender.com",  
+  // your React dev server
   credentials: true,                // allow cookies
 }));
 
 app.use(express.json());
 app.use(cookieParser());
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
 
 app.use("/api/bills", billRoutes);
 app.use("/api/products", productRoutes);
