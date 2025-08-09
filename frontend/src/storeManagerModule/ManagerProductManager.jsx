@@ -26,11 +26,11 @@ const ManagerProductManager = () => {
   const [editId, setEditId] = useState(null);
 
   useEffect(() => {
-    axios.get("https://groovybills.onrender.com/api/attributes/category").then((res) => setCategories(res.data));
-    axios.get("https://groovybills.onrender.com/api/attributes/size").then((res) => setSizes(res.data));
-    axios.get("https://groovybills.onrender.com/api/attributes/color").then((res) => setColors(res.data));
-    axios.get("https://groovybills.onrender.com/api/attributes/product-name").then((res) => setProductNames(res.data));
-    axios.get("https://groovybills.onrender.com/api/products").then((res) => setProducts(res.data));
+    axios.get("https://groovybackend.onrender.com//api/attributes/category").then((res) => setCategories(res.data));
+    axios.get("https://groovybackend.onrender.com//api/attributes/size").then((res) => setSizes(res.data));
+    axios.get("https://groovybackend.onrender.com//api/attributes/color").then((res) => setColors(res.data));
+    axios.get("https://groovybackend.onrender.com//api/attributes/product-name").then((res) => setProductNames(res.data));
+    axios.get("https://groovybackend.onrender.com//api/products").then((res) => setProducts(res.data));
   }, []);
 
   const handleChange = (e) => {
@@ -49,7 +49,7 @@ toast.error("All fields are required");
     }
 
     try {
-      const response = await axios.post("https://groovybills.onrender.com/api/products/", {
+      const response = await axios.post("https://groovybackend.onrender.com//api/products/", {
         productName,
         category,
         size,

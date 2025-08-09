@@ -17,7 +17,7 @@ const CustomerList = () => {
       }
 
       try {
-        const res = await axios.get(`https://groovybills.onrender.com/api/bills/store/${storeId}`, {
+        const res = await axios.get(`https://groovybackend.onrender.com//api/bills/store/${storeId}`, {
           withCredentials: true,
         });
 

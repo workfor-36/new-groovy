@@ -20,7 +20,7 @@ const CashierModal = ({ isOpen }) => {
   const handleLogin = async () => {
     try {
       const { data } = await axios.post(
-        "https://groovybills.onrender.com/api/auth/cashier/login",
+        "https://groovybackend.onrender.com//api/auth/cashier/login",
         { email, password }
       );
 

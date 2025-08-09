@@ -29,7 +29,7 @@ export default function Sidebar({ children }) {
     const fetchManagerProfile = async () => {
       try {
         const res = await axios.get(
-          "https://groovybills.onrender.com/api/auth/manager/profile",
+          "https://groovybackend.onrender.com//api/auth/manager/profile",
           { withCredentials: true }
         );
         setManagerInfo({

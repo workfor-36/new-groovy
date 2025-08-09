@@ -19,7 +19,7 @@ const AdminModal = ({ isOpen }) => {
 
     try {
       const response = await axios.post(
-        "https://groovybills.onrender.com/api/admin/login",
+        "https://groovybackend.onrender.com//api/admin/login",
         { email, password },
         {
           headers: {

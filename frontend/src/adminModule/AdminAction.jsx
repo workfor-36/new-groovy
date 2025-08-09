@@ -14,7 +14,7 @@ const AdminAction = () => {
 
   const fetchStores = async () => {
     try {
-      const res = await fetch("https://groovybills.onrender.com/api/stores/");
+      const res = await fetch("https://groovybackend.onrender.com//api/stores/");
       const data = await res.json();
       setStores(data);
     } catch (error) {
@@ -25,7 +25,7 @@ const AdminAction = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("https://groovybills.onrender.com/api/assign/all-users");
+      const res = await fetch("https://groovybackend.onrender.com//api/assign/all-users");
       const data = await res.json();
       setUsers(data);
     } catch (error) {
@@ -42,7 +42,7 @@ const AdminAction = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("https://groovybills.onrender.com/api/assign/create-user", {
+      const response = await fetch("https://groovybackend.onrender.com//api/assign/create-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -82,7 +82,7 @@ const AdminAction = () => {
 
     if (window.confirm(`Are you sure you want to delete this ${user.role}?`)) {
       try {
-        const res = await fetch(`https://groovybills.onrender.com/api/stores/delete/${role}/${id}`, {
+        const res = await fetch(`https://groovybackend.onrender.com//api/stores/delete/${role}/${id}`, {
           method: "DELETE",
         });
 
@@ -120,8 +120,8 @@ const AdminAction = () => {
 
       const endpoint =
         selectedUser.role === "Manager"
-          ? "https://groovybills.onrender.com/api/stores/assign-manager"
-          : "https://groovybills.onrender.com/api/stores/assign-cashier";
+          ? "https://groovybackend.onrender.com//api/stores/assign-manager"
+          : "https://groovybackend.onrender.com//api/stores/assign-cashier";
 
       const res = await fetch(endpoint, {
         method: "PUT",

@@ -13,7 +13,7 @@ const CreateStore = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("https://groovybills.onrender.com/api/stores/create", {
+      const res = await axios.post("https://groovybackend.onrender.com//api/stores/create", {
         storeId,
         storeName,
         location,
