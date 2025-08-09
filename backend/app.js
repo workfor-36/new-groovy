@@ -19,7 +19,7 @@ connectDB();
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173",  // your React dev server
+  origin: "https://groovyfrontend.onrender.com",  // your React dev server
   credentials: true,                // allow cookies
 }));
 
