@@ -18,11 +18,15 @@ dotenv.config();
 connectDB();
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173", // dev
+  "https://your-frontend-name.onrender.com"
+];
 app.use(cors({
-  origin:"https://groovyfrontend.onrender.com",  
-  // your React dev server
-  credentials: true,                // allow cookies
+  origin: allowedOrigins,
+  credentials: true
 }));
+
 
 app.use(express.json());
 app.use(cookieParser());
