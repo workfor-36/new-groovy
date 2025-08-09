@@ -60,7 +60,7 @@ const AdminTax = () => {
       });
     } catch (error) {
       console.error("Failed to add tax", error);
-      toast.error("Error adding tax");
+      toast.error("Error adding tax!");
     }
   };
 
