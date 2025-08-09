@@ -26,7 +26,7 @@ const CashierBilling = () => {
     const fetchInventory = async () => {
       try {
         const response = await fetch(
-          "http://localhost:4001/api/inventory/manager/",
+          "https://groovybills.onrender.com/api/inventory/manager/",
           {
             credentials: "include",
           }
@@ -43,7 +43,7 @@ const CashierBilling = () => {
         const storeId = Cookies.get("cashier_storeId");
 
         const res = await fetch(
-          `http://localhost:4001/api/bills/store/${storeId}`,
+          `https://groovybills.onrender.com/api/bills/store/${storeId}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -67,7 +67,7 @@ const CashierBilling = () => {
     if (!categoryId || taxMap[categoryId]) return;
     try {
       const res = await fetch(
-        `http://localhost:4001/api/tax/category/${categoryId}`
+        `https://groovybills.onrender.com/api/tax/category/${categoryId}`
       );
       const data = await res.json();
       if (data.length > 0) {
@@ -238,7 +238,7 @@ toast.error("Invalid session or role. Please log in.");
         customerPhone,
       };
 
-      const response = await fetch("http://localhost:4001/api/bills/checkout", {
+      const response = await fetch("https://groovybills.onrender.com/api/bills/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

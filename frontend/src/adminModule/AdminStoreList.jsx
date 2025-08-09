@@ -8,7 +8,7 @@ const AdminStoreList = () => {
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await axios.get("http://localhost:4001/api/stores/");
+        const response = await axios.get("https://groovybills.onrender.com/api/stores/");
         setStores(response.data);
       } catch (error) {
         console.error("Error fetching stores:", error);

@@ -8,7 +8,7 @@ const ManagerInventory = () => {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const response = await axios.get("http://localhost:4001/api/inventory/manager/", {
+        const response = await axios.get("https://groovybills.onrender.com/api/inventory/manager/", {
           withCredentials: true,
         });
         setInventory(response.data);

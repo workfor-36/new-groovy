@@ -18,10 +18,10 @@ const Category = () => {
     const fetchAttributes = async () => {
       try {
         const [catRes, sizeRes, colorRes, productNameRes] = await Promise.all([
-          axios.get("http://localhost:4001/api/attributes/category"),
-          axios.get("http://localhost:4001/api/attributes/size"),
-          axios.get("http://localhost:4001/api/attributes/color"),
-          axios.get("http://localhost:4001/api/attributes/product-name"),
+          axios.get("https://groovybills.onrender.com/api/attributes/category"),
+          axios.get("https://groovybills.onrender.com/api/attributes/size"),
+          axios.get("https://groovybills.onrender.com/api/attributes/color"),
+          axios.get("https://groovybills.onrender.com/api/attributes/product-name"),
         ]);
         setCategories(catRes.data);
         setSizes(sizeRes.data);
@@ -39,7 +39,7 @@ const Category = () => {
     if (!value.trim()) return;
 
     try {
-      const res = await axios.post(`http://localhost:4001/api/attributes/${type}`, {
+      const res = await axios.post(`https://groovybills.onrender.com/api/attributes/${type}`, {
         [`${type === "product-name" ? "productName" : type + "Name"}`]: value,
       });
       const newItem = res.data[type.replace("-", "")];
@@ -53,8 +53,8 @@ const Category = () => {
     try {
       const endpoint =
         type === "product-name"
-          ? `http://localhost:4001/api/attributes/${id}`
-          : `http://localhost:4001/api/attributes/${type}/${id}`;
+          ? `https://groovybills.onrender.com/api/attributes/${id}`
+          : `https://groovybills.onrender.com/api/attributes/${type}/${id}`;
 
       await axios.delete(endpoint);
       setter(state.filter((item) => item._id !== id));

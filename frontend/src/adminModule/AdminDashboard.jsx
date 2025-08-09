@@ -22,7 +22,7 @@ function AdminDashBoard() {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await axios.get("http://localhost:4001/api/reports/all", {
+        const response = await axios.get("https://groovybills.onrender.com/api/reports/all", {
           withCredentials: true,
         });
         setReports(response.data);

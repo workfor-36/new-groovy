@@ -15,7 +15,7 @@ const AdminReports = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await axios.get("http://localhost:4001/api/reports/all", {
+        const response = await axios.get("https://groovybills.onrender.com/api/reports/all", {
           withCredentials: true, // include credentials if needed
         });
         setReports(response.data);
