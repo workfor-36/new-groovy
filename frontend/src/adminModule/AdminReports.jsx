@@ -15,7 +15,7 @@ const AdminReports = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await axios.get("https://groovybackend.onrender.com//api/reports/all", {
+        const response = await axios.get("https://groovy-backend-km9g.onrender.com/api/reports/all", {
           withCredentials: true, // include credentials if needed
         });
         setReports(response.data);

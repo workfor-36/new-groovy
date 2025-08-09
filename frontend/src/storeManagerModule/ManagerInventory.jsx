@@ -8,7 +8,7 @@ const ManagerInventory = () => {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const response = await axios.get("https://groovybackend.onrender.com//api/inventory/manager/", {
+        const response = await axios.get("https://groovy-backend-km9g.onrender.com/api/inventory/manager/", {
           withCredentials: true,
         });
         setInventory(response.data);

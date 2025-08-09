@@ -22,8 +22,8 @@ const AdminTax = () => {
   const fetchData = async () => {
     try {
       const [catRes, taxRes] = await Promise.all([
-        axios.get("https://groovybackend.onrender.com//api/attributes/category"),
-        axios.get("https://groovybackend.onrender.com//api/tax/"),
+        axios.get("https://groovy-backend-km9g.onrender.com/api/attributes/category"),
+        axios.get("https://groovy-backend-km9g.onrender.com/api/tax/"),
       ]);
       setCategories(catRes.data || []);
       setTaxes(taxRes.data || []);
@@ -44,7 +44,7 @@ const AdminTax = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("https://groovybackend.onrender.com//api/tax/", {
+      const response = await axios.post("https://groovy-backend-km9g.onrender.com/api/tax/", {
         ...formData,
       });
 
@@ -67,7 +67,7 @@ const AdminTax = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this tax?")) return;
     try {
-      await axios.delete(`https://groovybackend.onrender.com//api/tax/taxes/${id}`);
+      await axios.delete(`https://groovy-backend-km9g.onrender.com/api/tax/taxes/${id}`);
       setTaxes(taxes.filter((tax) => tax._id !== id));
       toast.success("Tax deleted successfully!");
     } catch (error) {
